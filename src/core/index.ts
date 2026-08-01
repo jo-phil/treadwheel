@@ -1,6 +1,6 @@
-import type { Cipher, Envelope, JSONSerializable } from './types.js';
+import { decrypt, encrypt } from './cipher.js';
 import { mint, solve } from './puzzle.js';
-import { encrypt, decrypt } from './cipher.js';
+import type { Cipher, Envelope, JSONSerializable } from './types.js';
 
 function encodeBase64Url(str: string): string {
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');

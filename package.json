@@ -71,7 +71,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "check": "biome check",
+    "check": "biome check --write",
     "format": "biome format --write",
     "test": "vitest"
   }

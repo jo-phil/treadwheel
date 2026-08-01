@@ -1,8 +1,8 @@
 import { unseal } from '../core/index.js';
 import type { Cipher, JSONSerializable, Puzzle } from '../core/types.js';
 
-export { unseal };
 export type { Cipher, Puzzle };
+export { unseal };
 
 export async function unsealInWorker(token: string): Promise<JSONSerializable> {
   return new Promise((resolve, reject) => {
