@@ -72,7 +72,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
+    "build": "pnpm clean && tsc",
     "check": "tsc --noEmit",
     "lint": "biome check",
     "lint:fix": "biome check --write",
@@ -80,5 +80,6 @@
     "test": "vitest run",
     "test:cov": "vitest run --coverage",
     "test:dev": "vitest"
-  }
+  },
+  "packageManager": "pnpm@11.18.0+sha512.33d83c77da82f49fba836925c6f1b841181ec3132b670639bd012f7075f5c7cf634c5f870147c19aae7478fac01df09d8892e880454896edd23ee9b33757563c"
 }
