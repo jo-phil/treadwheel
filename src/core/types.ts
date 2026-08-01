@@ -1,11 +1,18 @@
 export interface Cipher {
-    salt: string;
+    s: string;
     iv: string;
-    ciphertext: string;
+    ct: string;
 }
 
 export interface Puzzle {
-    N: string;
+    n: string;
     x: string;
-    t: string;
+    t: number;
 }
+
+export type JSONPrimitive = string | number | boolean | null;
+export type JSONSerializable =
+    | JSONPrimitive
+    | { toJSON(): unknown }
+    | JSONSerializable[]
+    | { [key: string]: JSONSerializable | undefined };

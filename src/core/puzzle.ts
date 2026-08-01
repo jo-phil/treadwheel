@@ -37,27 +37,27 @@ function randomBigInt(strictUpperBound: bigint): bigint {
 }
 
 export function mint(
-    p: bigint, q: bigint, t: bigint
-): { puzzle: Puzzle; password: Uint8Array<ArrayBuffer> } {
-    const N = p * q;
+    p: bigint, q: bigint, t: number
+): { puzzle: Puzzle; solution: Uint8Array<ArrayBuffer> } {
+    const n = p * q;
     const phi = (p - 1n) * (q - 1n);
-    const x = randomBigInt(N);
-    const exponent = modExp(2n, t, phi);
-    const y = modExp(x, exponent, N);
+    const x = randomBigInt(n);
+    const exponent = modExp(2n, BigInt(t), phi);
+    const y = modExp(x, exponent, n);
 
     return {
-        puzzle: { N: N.toString(16), x: x.toString(16), t: t.toString(16) },
-        password: bigintToUint8Array(y),
+        puzzle: {n: n.toString(16), x: x.toString(16), t},
+        solution: bigintToUint8Array(y),
     };
 }
 
 export function solve(puzzle: Puzzle): Uint8Array<ArrayBuffer> {
-    const N = BigInt('0x' + puzzle.N);
-    const t = BigInt('0x' + puzzle.t);
+    const n = BigInt('0x' + puzzle.n);
     let y = BigInt('0x' + puzzle.x);
+    const t = BigInt(puzzle.t);
 
     for (let i = 0n; i < t; i++) {
-        y = (y * y) % N;
+        y = (y * y) % n;
     }
     return bigintToUint8Array(y);
 }

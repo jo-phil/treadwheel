@@ -1,11 +1,11 @@
 import { arrayToHex, hexToArray } from './hex.js';
-import type { Cipher } from './types.js';
+import type {Cipher, JSONSerializable} from './types.js';
 
 async function deriveKey(
-    password: Uint8Array<ArrayBuffer>, salt: Uint8Array<ArrayBuffer>
+    keyData: BufferSource, salt: BufferSource
 ): Promise<CryptoKey> {
     const baseKey = await globalThis.crypto.subtle.importKey(
-        "raw", password, "HKDF", false, ["deriveKey"]
+        "raw", keyData, "HKDF", false, ["deriveKey"]
     );
     return await globalThis.crypto.subtle.deriveKey(
         {
@@ -17,31 +17,32 @@ async function deriveKey(
 }
 
 export async function encrypt(
-    payload: any, password: Uint8Array<ArrayBuffer>
+    content: JSONSerializable, keyData: BufferSource
 ): Promise<Cipher> {
     const salt = globalThis.crypto.getRandomValues(new Uint8Array(32));
     const iv = globalThis.crypto.getRandomValues(new Uint8Array(12));
-    const derivedKey = await deriveKey(password, salt);
+    const derivedKey = await deriveKey(keyData, salt);
 
     const encryptedBuffer = await globalThis.crypto.subtle.encrypt(
         { name: "AES-GCM", iv: iv },
-        derivedKey, new TextEncoder().encode(JSON.stringify(payload))
+        derivedKey,
+        new TextEncoder().encode(JSON.stringify(content))
     );
 
     return {
-        salt: arrayToHex(salt),
+        s: arrayToHex(salt),
         iv: arrayToHex(iv),
-        ciphertext: arrayToHex(new Uint8Array(encryptedBuffer))
+        ct: arrayToHex(new Uint8Array(encryptedBuffer))
     };
 }
 
 export async function decrypt(
-    cipher: Cipher, password: Uint8Array<ArrayBuffer>
-): Promise<any> {
-    const derivedKey = await deriveKey(password, hexToArray(cipher.salt));
+    cipher: Cipher, keyData: BufferSource
+): Promise<JSONSerializable> {
+    const derivedKey = await deriveKey(keyData, hexToArray(cipher.s));
     const decryptedBuffer = await globalThis.crypto.subtle.decrypt(
         { name: "AES-GCM", iv: hexToArray(cipher.iv) },
-        derivedKey, hexToArray(cipher.ciphertext)
+        derivedKey, hexToArray(cipher.ct)
     );
     return JSON.parse(new TextDecoder().decode(decryptedBuffer));
 }
