@@ -22,9 +22,49 @@
     "url": "https://github.com/jo-phil/treadwheel/issues"
   },
   "type": "module",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/node/index.js",
+  "browser": "./dist/browser/index.js",
+  "types": "./dist/node/index.d.ts",
+  "bin": {
+    "treadwheel": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "node": {
+        "types": "./dist/node/index.d.ts",
+        "import": "./dist/node/index.js"
+      },
+      "browser": {
+        "types": "./dist/browser/index.d.ts",
+        "import": "./dist/browser/index.js"
+      },
+      "default": {
+        "types": "./dist/browser/index.d.ts",
+        "import": "./dist/browser/index.js"
+      }
+    },
+    "./seal": {
+      "node": {
+        "types": "./dist/node/seal.d.ts",
+        "import": "./dist/node/seal.js"
+      },
+      "browser": {
+        "types": "./dist/browser/seal.d.ts",
+        "import": "./dist/browser/seal.js"
+      },
+      "default": {
+        "types": "./dist/browser/seal.d.ts",
+        "import": "./dist/browser/seal.js"
+      }
+    }
+  },
   "devDependencies": {
     "@types/node": "^26.1.2",
+    "@vitest/web-worker": "^4.1.10",
+    "tsdown": "^0.22.14",
     "typescript": "^5.5.3",
     "vitest": "^4.1.10"
   },

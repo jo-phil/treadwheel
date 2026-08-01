@@ -10,6 +10,10 @@ export interface Puzzle {
     t: number;
 }
 
+export interface Envelope extends Puzzle, Cipher {
+    v: 1;
+}
+
 export type JSONPrimitive = string | number | boolean | null;
 export type JSONSerializable =
     | JSONPrimitive
