@@ -3,7 +3,7 @@ import type { Puzzle } from './types.js';
 
 function bigintToUint8Array(x: bigint): Uint8Array<ArrayBuffer> {
   let hex = x.toString(16);
-  if (hex.length % 2 !== 0) hex = '0' + hex;
+  if (hex.length % 2 !== 0) hex = `0${hex}`;
   if (typeof Buffer !== 'undefined')
     return Uint8Array.from(Buffer.from(hex, 'hex'));
   return hexToArray(hex);
@@ -34,7 +34,7 @@ function randomBigInt(strictUpperBound: bigint): bigint {
   const array = globalThis.crypto.getRandomValues(
     new Uint8Array(byteLength + 16),
   );
-  let x = BigInt('0x' + arrayToHex(array)) % strictUpperBound;
+  let x = BigInt(`0x${arrayToHex(array)}`) % strictUpperBound;
   if (x <= 1n) x = 2n;
   return x;
 }
@@ -57,8 +57,8 @@ export function mint(
 }
 
 export function solve(puzzle: Puzzle): Uint8Array<ArrayBuffer> {
-  const n = BigInt('0x' + puzzle.n);
-  let y = BigInt('0x' + puzzle.x);
+  const n = BigInt(`0x${puzzle.n}`);
+  let y = BigInt(`0x${puzzle.x}`);
   const t = BigInt(puzzle.t);
 
   for (let i = 0n; i < t; i++) {

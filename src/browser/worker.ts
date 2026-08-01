@@ -4,10 +4,11 @@ self.onmessage = async (e: MessageEvent) => {
   try {
     const content = await unseal(e.data);
     self.postMessage({ success: true, content });
-  } catch (error: any) {
+  } catch (error) {
+    const isError = error instanceof Error;
     self.postMessage({
       success: false,
-      error: error?.message || 'Unknown error',
+      error: isError ? error.message : String(error ?? 'Unknown error'),
     });
   }
 };
