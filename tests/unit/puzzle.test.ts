@@ -8,5 +8,6 @@ test('puzzle solution matches original secret', async () => {
 
     const { puzzle, password } = mint(p, q, 1000n);
     const solution = solve(puzzle);
+
     expect(solution).toEqual(password);
 })
