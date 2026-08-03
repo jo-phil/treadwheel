@@ -1,18 +1,25 @@
-import { arrayToHex, hexToArray } from './hex.js';
 import type { Puzzle } from './types.js';
 
-function bigintToUint8Array(x: bigint): Uint8Array<ArrayBuffer> {
-  let hex = x.toString(16);
-  if (hex.length % 2 !== 0) hex = `0${hex}`;
-  if (typeof Buffer !== 'undefined')
-    return Uint8Array.from(Buffer.from(hex, 'hex'));
-  return hexToArray(hex);
+function bytesToBigInt(bytes: Uint8Array): bigint {
+  let result = 0n;
+  let shift = (bytes.length - 1) * 8;
+  for (const byte of bytes) {
+    result |= BigInt(byte) << BigInt(shift);
+    shift -= 8;
+  }
+  return result;
 }
 
-function bitLength(x: bigint): number {
-  if (x === 0n) return 0;
-  const i = (x.toString(16).length - 1) * 4;
-  return i + 32 - Math.clz32(Number(x >> BigInt(i)));
+function bigIntToBytes(
+  bigint: bigint,
+  byteLength: number,
+): Uint8Array<ArrayBuffer> {
+  const buffer = new Uint8Array(byteLength);
+  for (let i = 0; i < byteLength; i++) {
+    const shift = BigInt((byteLength - 1 - i) * 8);
+    buffer[i] = Number((bigint >> shift) & 0xffn);
+  }
+  return buffer;
 }
 
 function modExp(base: bigint, exponent: bigint, modulus: bigint): bigint {
@@ -27,14 +34,12 @@ function modExp(base: bigint, exponent: bigint, modulus: bigint): bigint {
   return result;
 }
 
-function randomBigInt(strictUpperBound: bigint): bigint {
-  const byteLength = Math.ceil(bitLength(strictUpperBound) / 8);
-
+function randomBigInt(strictUpperBound: bigint, byteLength: number): bigint {
   // Oversample by 16 bytes to reduce modulo bias
-  const array = globalThis.crypto.getRandomValues(
-    new Uint8Array(byteLength + 16),
-  );
-  let x = BigInt(`0x${arrayToHex(array)}`) % strictUpperBound;
+  const randomBytes = new Uint8Array(byteLength + 16);
+  globalThis.crypto.getRandomValues(randomBytes);
+
+  let x = bytesToBigInt(randomBytes) % strictUpperBound;
   if (x <= 1n) x = 2n;
   return x;
 }
@@ -46,13 +51,13 @@ export function mint(
 ): { puzzle: Puzzle; solution: Uint8Array<ArrayBuffer> } {
   const n = p * q;
   const phi = (p - 1n) * (q - 1n);
-  const x = randomBigInt(n);
+  const x = randomBigInt(n, 256);
   const exponent = modExp(2n, BigInt(t), phi);
   const y = modExp(x, exponent, n);
 
   return {
     puzzle: { n: n.toString(16), x: x.toString(16), t },
-    solution: bigintToUint8Array(y),
+    solution: bigIntToBytes(y, 256),
   };
 }
 
@@ -64,5 +69,5 @@ export function solve(puzzle: Puzzle): Uint8Array<ArrayBuffer> {
   for (let i = 0n; i < t; i++) {
     y = (y * y) % n;
   }
-  return bigintToUint8Array(y);
+  return bigIntToBytes(y, 256);
 }
