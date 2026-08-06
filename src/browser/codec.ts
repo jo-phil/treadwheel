@@ -3,7 +3,14 @@ export function bytesToBase64Url(bytes: Uint8Array): string {
     return bytes.toBase64({ alphabet: 'base64url', omitPadding: true });
   }
 
-  const base64 = btoa(new TextDecoder('latin1').decode(bytes));
+  const CHUNK_SIZE = 0x4000;
+  let binaryString = '';
+  for (let i = 0; i < bytes.length; i += CHUNK_SIZE) {
+    const chunk = bytes.subarray(i, i + CHUNK_SIZE);
+    binaryString += String.fromCharCode(...chunk);
+  }
+
+  const base64 = btoa(binaryString);
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
