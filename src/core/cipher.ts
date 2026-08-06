@@ -1,4 +1,3 @@
-import { arrayToHex, hexToArray } from './hex.js';
 import type { Cipher, JSONSerializable } from './types.js';
 
 async function deriveKey(
@@ -41,9 +40,9 @@ export async function encrypt(
   );
 
   return {
-    s: arrayToHex(salt),
-    iv: arrayToHex(iv),
-    ct: arrayToHex(new Uint8Array(encryptedBuffer)),
+    salt,
+    iv,
+    ciphertext: new Uint8Array(encryptedBuffer),
   };
 }
 
@@ -51,11 +50,11 @@ export async function decrypt(
   cipher: Cipher,
   keyData: BufferSource,
 ): Promise<JSONSerializable> {
-  const derivedKey = await deriveKey(keyData, hexToArray(cipher.s));
+  const derivedKey = await deriveKey(keyData, cipher.salt);
   const decryptedBuffer = await globalThis.crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: hexToArray(cipher.iv) },
+    { name: 'AES-GCM', iv: cipher.iv },
     derivedKey,
-    hexToArray(cipher.ct),
+    cipher.ciphertext,
   );
   return JSON.parse(new TextDecoder().decode(decryptedBuffer));
 }

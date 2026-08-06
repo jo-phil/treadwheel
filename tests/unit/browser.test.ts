@@ -7,7 +7,7 @@ import { seal } from '../../src/browser/seal.js';
 test('browser seals and unseals correctly', async () => {
   const content = 'Hello World';
 
-  const envelope = await seal(content, 1000);
+  const envelope = await seal(content, 1000n);
   const unlocked = await unsealInWorker(envelope);
 
   expect(unlocked).toEqual(content);

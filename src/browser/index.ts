@@ -1,5 +1,5 @@
-import { unseal } from '../core/index.js';
 import type { Cipher, JSONSerializable, Puzzle } from '../core/types.js';
+import { unseal } from './unseal.js';
 
 export type { Cipher, Puzzle };
 export { unseal };

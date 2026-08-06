@@ -1,6 +1,6 @@
 import type { Puzzle } from './types.js';
 
-function bytesToBigInt(bytes: Uint8Array): bigint {
+export function bytesToBigInt(bytes: Uint8Array): bigint {
   let result = 0n;
   let shift = (bytes.length - 1) * 8;
   for (const byte of bytes) {
@@ -47,26 +47,25 @@ function randomBigInt(strictUpperBound: bigint, byteLength: number): bigint {
 export function mint(
   p: bigint,
   q: bigint,
-  t: number,
+  t: bigint,
 ): { puzzle: Puzzle; solution: Uint8Array<ArrayBuffer> } {
   const n = p * q;
   const phi = (p - 1n) * (q - 1n);
   const x = randomBigInt(n, 256);
-  const exponent = modExp(2n, BigInt(t), phi);
+  const exponent = modExp(2n, t, phi);
   const y = modExp(x, exponent, n);
 
   return {
-    puzzle: { n: n.toString(16), x: x.toString(16), t },
+    puzzle: { n: bigIntToBytes(n, 256), x: bigIntToBytes(x, 256), t },
     solution: bigIntToBytes(y, 256),
   };
 }
 
 export function solve(puzzle: Puzzle): Uint8Array<ArrayBuffer> {
-  const n = BigInt(`0x${puzzle.n}`);
-  let y = BigInt(`0x${puzzle.x}`);
-  const t = BigInt(puzzle.t);
+  const n = bytesToBigInt(puzzle.n);
+  let y = bytesToBigInt(puzzle.x);
 
-  for (let i = 0n; i < t; i++) {
+  for (let i = 0n; i < puzzle.t; i++) {
     y = (y * y) % n;
   }
   return bigIntToBytes(y, 256);

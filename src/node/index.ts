@@ -1,8 +1,7 @@
 import { Worker } from 'node:worker_threads';
-
-import { unseal } from '../core/index.js';
 import type { Cipher, JSONSerializable, Puzzle } from '../core/types.js';
 import { seal } from './seal.js';
+import { unseal } from './unseal.js';
 
 export type { Cipher, Puzzle };
 export { seal, unseal };

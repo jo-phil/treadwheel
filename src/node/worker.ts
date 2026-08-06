@@ -1,6 +1,6 @@
 import { parentPort } from 'node:worker_threads';
 
-import { unseal } from '../core/index.js';
+import { unseal } from './unseal.js';
 
 if (!parentPort) {
   throw new Error('Failed to initialize worker port');

@@ -1,13 +1,13 @@
 export interface Cipher {
-  s: string;
-  iv: string;
-  ct: string;
+  salt: Uint8Array<ArrayBuffer>;
+  iv: Uint8Array<ArrayBuffer>;
+  ciphertext: Uint8Array<ArrayBuffer>;
 }
 
 export interface Puzzle {
-  n: string;
-  x: string;
-  t: number;
+  n: Uint8Array<ArrayBuffer>;
+  x: Uint8Array<ArrayBuffer>;
+  t: bigint;
 }
 
 export interface Envelope extends Puzzle, Cipher {
