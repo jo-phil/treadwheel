@@ -1,10 +1,10 @@
 import { decrypt, encrypt } from './cipher.js';
 import { bytesToEnvelope, envelopeToBytes } from './io.js';
 import { mint, solve } from './puzzle.js';
-import type { Cipher, Envelope, JSONSerializable } from './types.js';
+import type { Cipher, Envelope } from './types.js';
 
 export async function sealFromPrimes(
-  content: JSONSerializable,
+  content: string,
   t: bigint,
   p: bigint,
   q: bigint,
@@ -24,15 +24,13 @@ export async function sealFromPrimes(
 
 export async function unsealBytes(
   bytes: Uint8Array<ArrayBuffer>,
-): Promise<JSONSerializable> {
+): Promise<string> {
   const envelope: Envelope = bytesToEnvelope(bytes);
   const solution = solve(envelope);
 
-  let content: JSONSerializable;
   try {
-    content = await decrypt(envelope, solution);
+    return await decrypt(envelope, solution);
   } finally {
     solution.fill(0);
   }
-  return content;
 }

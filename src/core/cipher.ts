@@ -1,4 +1,4 @@
-import type { Cipher, JSONSerializable } from './types.js';
+import type { Cipher } from './types.js';
 
 async function deriveKey(
   keyData: BufferSource,
@@ -11,6 +11,7 @@ async function deriveKey(
     false,
     ['deriveKey'],
   );
+
   return await globalThis.crypto.subtle.deriveKey(
     {
       name: 'HKDF',
@@ -26,7 +27,7 @@ async function deriveKey(
 }
 
 export async function encrypt(
-  content: JSONSerializable,
+  content: string,
   keyData: BufferSource,
 ): Promise<Cipher> {
   const salt = globalThis.crypto.getRandomValues(new Uint8Array(32));
@@ -36,7 +37,7 @@ export async function encrypt(
   const encryptedBuffer = await globalThis.crypto.subtle.encrypt(
     { name: 'AES-GCM', iv: iv },
     derivedKey,
-    new TextEncoder().encode(JSON.stringify(content)),
+    new TextEncoder().encode(content),
   );
 
   return {
@@ -49,12 +50,12 @@ export async function encrypt(
 export async function decrypt(
   cipher: Cipher,
   keyData: BufferSource,
-): Promise<JSONSerializable> {
+): Promise<string> {
   const derivedKey = await deriveKey(keyData, cipher.salt);
   const decryptedBuffer = await globalThis.crypto.subtle.decrypt(
     { name: 'AES-GCM', iv: cipher.iv },
     derivedKey,
     cipher.ciphertext,
   );
-  return JSON.parse(new TextDecoder().decode(decryptedBuffer));
+  return new TextDecoder().decode(decryptedBuffer);
 }

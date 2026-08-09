@@ -1,12 +1,8 @@
 import { sealFromPrimes } from '../core/index.js';
 import { bytesToBigInt } from '../core/puzzle.js';
-import type { JSONSerializable } from '../core/types.js';
 import { base64UrlToBytes, bytesToBase64Url } from './codec.js';
 
-export async function seal(
-  content: JSONSerializable,
-  t: bigint,
-): Promise<string> {
+export async function seal(content: string, t: bigint): Promise<string> {
   const keyPair = await globalThis.crypto.subtle.generateKey(
     {
       name: 'RSA-OAEP',
