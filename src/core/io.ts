@@ -4,16 +4,18 @@ const MAGIC_BYTES = new Uint8Array([
   0x74, 0x72, 0x65, 0x61, 0x64, 0x77, 0x68, 0x65, 0x65, 0x6c,
 ]);
 
-class BinaryReader {
-  private view: DataView;
-  private bytes: Uint8Array<ArrayBuffer>;
-  private offset: number = 0;
+class BinaryCursor {
+  protected view: DataView;
+  protected bytes: Uint8Array<ArrayBuffer>;
+  protected offset: number = 0;
 
   constructor(bytes: Uint8Array<ArrayBuffer>) {
     this.bytes = bytes;
     this.view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   }
+}
 
+class BinaryReader extends BinaryCursor {
   public readUint8(): number {
     return this.view.getUint8(this.offset++);
   }
@@ -48,16 +50,7 @@ class BinaryReader {
   }
 }
 
-class BinaryWriter {
-  private view: DataView;
-  private bytes: Uint8Array;
-  private offset: number = 0;
-
-  constructor(bytes: Uint8Array) {
-    this.bytes = bytes;
-    this.view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  }
-
+class BinaryWriter extends BinaryCursor {
   public writeUint8(value: number): void {
     this.view.setUint8(this.offset++, value);
   }
