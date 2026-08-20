@@ -1,12 +1,15 @@
-import { expect, test } from 'vitest';
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
 
 import { seal, unseal } from '../../src/node/index.js';
 
-test('node locks and unlocks correctly', async () => {
-  const content = 'Hello World';
+describe('node', () => {
+  it('unseals what it sealed', async () => {
+    const content = 'Hello World';
 
-  const envelope = await seal(content, 1000n);
-  const unlocked = await unseal(envelope);
+    const envelope = await seal(content, 1000n);
+    const unlocked = await unseal(envelope);
 
-  expect(unlocked).toEqual(content);
+    assert.strictEqual(unlocked, content);
+  });
 });

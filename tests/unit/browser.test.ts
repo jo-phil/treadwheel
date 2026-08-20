@@ -1,14 +1,16 @@
-import { expect, test } from 'vitest';
-import '@vitest/web-worker';
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
 
-import { unsealInWorker } from '../../src/browser/index.js';
+import { unseal } from '../../src/browser/index.js';
 import { seal } from '../../src/browser/seal.js';
 
-test('browser seals and unseals correctly', async () => {
-  const content = 'Hello World';
+describe('browser', () => {
+  it('unseals what it sealed', async () => {
+    const content = 'Hello World';
 
-  const envelope = await seal(content, 1000n);
-  const unlocked = await unsealInWorker(envelope);
+    const envelope = await seal(content, 1000n);
+    const unlocked = await unseal(envelope);
 
-  expect(unlocked).toEqual(content);
+    assert.strictEqual(unlocked, content);
+  });
 });

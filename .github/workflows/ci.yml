@@ -49,19 +49,25 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run type-check
-        run: pnpm run check
+        run: pnpm check
 
       - name: Run tests
         if: '!matrix.coverage'
-        run: pnpm run test
+        run: pnpm test
 
       - name: Run tests with coverage
         if: matrix.coverage
-        run: pnpm vitest run --coverage --coverage.reporter=json --coverage.reporter=json-summary
+        run: |
+          pnpm c8 --reporter none pnpm test
+          pnpm c8 --reporter text report > ./coverage/coverage.txt
 
-      - name: Report coverage
+      - name: Parse coverage report to markdown
         if: matrix.coverage
-        uses: davelosert/vitest-coverage-report-action@8b157684c6a6b259b97d45e72b44242865c0f6a5 # v2.12.2
-        with:
-          file-coverage-mode: 'all'
-          comment-on: 'none'
+        uses: fingerprintjs/action-coverage-report-md@72dfb7de7581612640a8e599e918b2eda98f9bba # v2.0.1
+        id: coverage
+
+      - name: Add coverage report to job summary
+        if: matrix.coverage
+        run: |
+          echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.coverage.outputs.markdownReport }}" >> $GITHUB_STEP_SUMMARY
