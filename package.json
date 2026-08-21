@@ -43,20 +43,6 @@
         "types": "./dist/browser/index.d.ts",
         "import": "./dist/browser/index.js"
       }
-    },
-    "./seal": {
-      "node": {
-        "types": "./dist/node/seal.d.ts",
-        "import": "./dist/node/seal.js"
-      },
-      "browser": {
-        "types": "./dist/browser/seal.d.ts",
-        "import": "./dist/browser/seal.js"
-      },
-      "default": {
-        "types": "./dist/browser/seal.d.ts",
-        "import": "./dist/browser/seal.js"
-      }
     }
   },
   "devDependencies": {

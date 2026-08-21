@@ -1,8 +1,7 @@
 import assert from 'node:assert';
 import { describe, it } from 'node:test';
 
-import { unseal } from '../../src/browser/index.js';
-import { seal } from '../../src/browser/seal.js';
+import { seal, unseal } from '../../src/browser/index.js';
 
 describe('browser', () => {
   it('unseals what it sealed', async () => {

@@ -1,8 +1,9 @@
 import type { Cipher, Puzzle } from '../core/types.js';
+import { seal } from './seal.js';
 import { unseal } from './unseal.js';
 
 export type { Cipher, Puzzle };
-export { unseal };
+export { seal, unseal };
 
 export async function unsealInWorker(token: string): Promise<string> {
   return new Promise((resolve, reject) => {
