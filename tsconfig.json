@@ -29,5 +29,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "exclude": ["tests/**/*", "**/*.test.ts"]
+  "exclude": ["tests/**/*", "**/*.test.ts", "vitest.config.ts"]
 }

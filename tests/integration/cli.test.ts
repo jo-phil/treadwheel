@@ -1,8 +1,7 @@
-import assert from 'node:assert';
 import path from 'node:path';
-import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { execaNode } from 'execa';
+import { describe, expect, it } from 'vitest';
 
 const CLI_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -28,10 +27,13 @@ describe('CLI', () => {
     const plaintext = 'Hello World';
 
     const sealResult = await runCLI(['seal', '-t 1000', plaintext]);
-    assert.strictEqual(sealResult.exitCode, 0);
+    expect(sealResult.stderr).toBe('');
+    expect(sealResult.exitCode).toBe(0);
+    expect(sealResult.stdout.trim()).toMatch(/^[a-zA-Z0-9_-]+$/);
 
     const unsealResult = await runCLI(['unseal'], sealResult.stdout);
-    assert.strictEqual(unsealResult.exitCode, 0);
-    assert.strictEqual(unsealResult.stdout.trim(), plaintext);
+    expect(unsealResult.stderr).toBe('');
+    expect(unsealResult.exitCode).toBe(0);
+    expect(unsealResult.stdout.trim()).toBe(plaintext);
   });
 });

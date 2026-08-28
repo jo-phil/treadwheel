@@ -1,6 +1,5 @@
-import assert from 'node:assert';
 import crypto from 'node:crypto';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 
 import { mint, solve } from '../../src/core/puzzle.js';
 
@@ -12,6 +11,6 @@ describe('puzzle', () => {
     const { puzzle, solution } = mint(p, q, 1000n);
     const sequential = solve(puzzle);
 
-    assert.deepStrictEqual(sequential, solution);
+    expect(sequential).toStrictEqual(solution);
   });
 });

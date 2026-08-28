@@ -1,5 +1,4 @@
-import assert from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 
 import { seal, unseal } from '../../src/node/index.js';
 
@@ -10,6 +9,6 @@ describe('node', () => {
     const envelope = await seal(content, 1000n);
     const unlocked = await unseal(envelope);
 
-    assert.strictEqual(unlocked, content);
+    expect(unlocked).toBe(content);
   });
 });

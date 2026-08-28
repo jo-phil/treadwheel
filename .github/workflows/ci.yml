@@ -58,8 +58,8 @@ jobs:
       - name: Run tests with coverage
         if: matrix.coverage
         run: |
-          pnpm c8 --reporter none pnpm test
-          pnpm c8 --reporter text report > ./coverage/coverage.txt
+          pnpm vitest run --coverage --coverage.reporter=json
+          pnpm nyc report --temp-dir coverage/ --reporter text > ./coverage/coverage.txt
 
       - name: Parse coverage report to markdown
         if: matrix.coverage

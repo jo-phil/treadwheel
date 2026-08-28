@@ -1,6 +1,5 @@
-import assert from 'node:assert';
 import crypto from 'node:crypto';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 
 import { decrypt, encrypt } from '../../src/core/cipher.js';
 
@@ -12,6 +11,6 @@ describe('cipher', () => {
     const encrypted = await encrypt(original, keyData);
     const decrypted = await decrypt(encrypted, keyData);
 
-    assert.strictEqual(decrypted, original);
+    expect(decrypted).toBe(original);
   });
 });
