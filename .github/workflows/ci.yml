@@ -12,7 +12,10 @@ concurrency:
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
+    outputs:
+      playwright-version: ${{ steps.playwright-version.outputs.version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -22,52 +25,61 @@ jobs:
       - name: Run Biome
         run: biome ci
 
-  test:
+      - name: Get Playwright version for browser test job
+        id: playwright-version
+        run: |
+          VERSION=$(yq '.packages | keys[] | select(. == "playwright@*") | sub("playwright@", "")' pnpm-lock.yaml)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+  test-node:
     needs: lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: ["22", "24", "26"]
-        include:
-          - node-version: "26"
-            coverage: true
 
-    name: test (Node.js ${{ matrix.node-version }})
+    name: Test Node.js ${{ matrix.node-version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
-
-      - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - name: Setup pnpm and install dependencies
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
+          runtime: node@${{ matrix.node-version }}
+          cache: true
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Run node tests
+        run: pnpm vitest run --project node
+
+  test-browser:
+    name: Test browser and Node.js with coverage
+    needs: [lint, test-node]
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v{{ needs.lint.outputs.playwright-version }}-noble
+      options: --user 1001
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pnpm and install dependencies
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
+        with:
+          cache: true
 
       - name: Run type-check
         run: pnpm check
 
-      - name: Run tests
-        if: '!matrix.coverage'
-        run: pnpm test
-
       - name: Run tests with coverage
-        if: matrix.coverage
         run: |
           pnpm vitest run --coverage --coverage.reporter=json
           pnpm nyc report --temp-dir coverage/ --reporter text > ./coverage/coverage.txt
 
       - name: Parse coverage report to markdown
-        if: matrix.coverage
         uses: fingerprintjs/action-coverage-report-md@72dfb7de7581612640a8e599e918b2eda98f9bba # v2.0.1
         id: coverage
 
       - name: Add coverage report to job summary
-        if: matrix.coverage
         run: |
           echo "## Coverage Report" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.coverage.outputs.markdownReport }}" >> $GITHUB_STEP_SUMMARY
