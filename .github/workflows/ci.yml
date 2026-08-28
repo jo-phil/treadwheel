@@ -55,8 +55,12 @@ jobs:
     name: Test browser and Node.js with coverage
     needs: [lint, test-node]
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        playwright-version: [ "${{ needs.lint.outputs.playwright-version }}" ]
     container:
-      image: mcr.microsoft.com/playwright:v{{ needs.lint.outputs.playwright-version }}-noble
+      image: mcr.microsoft.com/playwright:v{{ matrix.playwright-version }}-noble
       options: --user 1001
 
     steps:
