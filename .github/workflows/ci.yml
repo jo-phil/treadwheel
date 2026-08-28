@@ -14,8 +14,6 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    outputs:
-      playwright-version: ${{ steps.playwright-version.outputs.version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -24,12 +22,6 @@ jobs:
 
       - name: Run Biome
         run: biome ci
-
-      - name: Get Playwright version for browser test job
-        id: playwright-version
-        run: |
-          VERSION=$(yq '.packages | keys[] | select(. == "playwright@*") | sub("playwright@", "")' pnpm-lock.yaml)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
   test-node:
     needs: lint
@@ -56,13 +48,6 @@ jobs:
     needs: [lint, test-node]
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        playwright-version: [ "${{ needs.lint.outputs.playwright-version }}" ]
-    container:
-      image: mcr.microsoft.com/playwright:v{{ matrix.playwright-version }}-noble
-      options: --user 1001
-
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -73,6 +58,9 @@ jobs:
 
       - name: Run type-check
         run: pnpm check
+
+      - name: Install Playwright browsers
+        run: pnpm playwright install --with-deps chromium firefox
 
       - name: Run tests with coverage
         run: |
