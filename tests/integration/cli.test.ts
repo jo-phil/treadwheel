@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import path from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { execa } from 'execa';
+import { execaNode } from 'execa';
 
 const CLI_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -10,8 +10,9 @@ const CLI_PATH = path.resolve(
 );
 
 async function runCLI(args: string[], stdin?: string) {
-  const result = await execa('tsx', [CLI_PATH, ...args], {
+  const result = await execaNode(CLI_PATH, args, {
     reject: false,
+    nodeOptions: ['--import=tsx'],
     ...(stdin ? { input: stdin } : {}),
   });
 
