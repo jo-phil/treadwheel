@@ -39,6 +39,7 @@ jobs:
         with:
           runtime: node@${{ matrix.node-version }}
           cache: true
+          dest: ~/setup-pnpm-node${{ matrix.node-version }}
 
       - name: Run node tests
         run: pnpm vitest run --project node
