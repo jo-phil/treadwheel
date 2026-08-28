@@ -2,6 +2,7 @@
 
 import { text } from 'node:stream/consumers';
 import { parseArgs } from 'node:util';
+
 import { seal, unseal } from './index.js';
 
 const USAGE = `usage: treadwheel {seal,unseal} [-t TIME] PAYLOAD

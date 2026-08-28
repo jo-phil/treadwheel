@@ -1,4 +1,5 @@
 import { Worker } from 'node:worker_threads';
+
 import type { Cipher, Puzzle } from '../core/types.js';
 import { seal } from './seal.js';
 import { unseal } from './unseal.js';
