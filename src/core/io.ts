@@ -104,16 +104,16 @@ export function envelopeToBytes(envelope: Envelope): Uint8Array<ArrayBuffer> {
   const writer = new BinaryWriter(bytes);
 
   writer.writeBytes(uuidToBytes(envelope.uuid));
-
   writer.writeBytes(MAGIC_BYTES);
   writer.writeUint8(envelope.v);
 
-  writer.writeBigUInt64(envelope.t);
   writer.writeUint16(envelope.n.byteLength);
   writer.writeUint32(envelope.ciphertext.byteLength);
 
+  writer.writeBigUInt64(envelope.t);
   writer.writeBytes(envelope.n);
   writer.writeBytes(envelope.x);
+
   writer.writeBytes(envelope.salt);
   writer.writeBytes(envelope.iv);
   writer.writeBytes(envelope.ciphertext);
@@ -130,21 +130,19 @@ export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
   if (
     magicBytes.byteLength !== MAGIC_BYTES.byteLength ||
     !magicBytes.every((b, i) => b === MAGIC_BYTES[i])
-  ) {
+  )
     throw new Error('Invalid magic bytes');
-  }
 
   const v = reader.readUint8();
-  if (v !== 1) {
-    throw new Error(`Unsupported version: ${v}`);
-  }
+  if (v !== 1) throw new Error(`Unsupported version: ${v}`);
 
-  const t = reader.readBigUInt64();
   const modulusLength = reader.readUint16();
   const ciphertextLength = reader.readUint32();
 
+  const t = reader.readBigUInt64();
   const n = reader.readBytes(modulusLength);
   const x = reader.readBytes(modulusLength);
+
   const salt = reader.readBytes(32);
   const iv = reader.readBytes(12);
   const ciphertext = reader.readBytes(ciphertextLength);
