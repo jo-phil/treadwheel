@@ -36,4 +36,11 @@ describe('CLI', () => {
     expect(unsealResult.exitCode).toBe(0);
     expect(unsealResult.stdout.trim()).toBe(fixture.plaintext);
   });
+
+  it('unseals golden envelope', async () => {
+    const unsealResult = await runCLI(['unseal', fixture.envelope]);
+    expect(unsealResult.stderr).toBe('');
+    expect(unsealResult.exitCode).toBe(0);
+    expect(unsealResult.stdout.trim()).toBe(fixture.plaintext);
+  });
 });
