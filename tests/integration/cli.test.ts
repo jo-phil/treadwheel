@@ -26,7 +26,7 @@ async function runCLI(args: string[], stdin?: string) {
 
 describe('CLI', () => {
   it('unseals what it sealed', async () => {
-    const sealResult = await runCLI(['seal', '-t 1000', fixture.plaintext]);
+    const sealResult = await runCLI(['seal', '-t 10', fixture.plaintext]);
     expect(sealResult.stderr).toBe('');
     expect(sealResult.exitCode).toBe(0);
     expect(sealResult.stdout.trim()).toMatch(/^[a-zA-Z0-9_-]+$/);
