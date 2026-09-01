@@ -1,8 +1,21 @@
 import type { Envelope } from './types.js';
 
-const MAGIC_BYTES = new Uint8Array([
-  0x74, 0x72, 0x65, 0x61, 0x64, 0x77, 0x68, 0x65, 0x65, 0x6c,
-]);
+const MAGIC_BYTES = new TextEncoder().encode('Treadwheel');
+
+function uuidToBytes(uuid: string): Uint8Array<ArrayBuffer> {
+  const hexPairs = uuid.match(/[0-9a-fA-F]{2}/g);
+  if (hexPairs?.length !== 16) {
+    throw new Error(`invalid uuid: ${uuid}`);
+  }
+  return Uint8Array.from(hexPairs, (hex) => parseInt(hex, 16));
+}
+
+function bytesToUUID(bytes: Uint8Array): string {
+  const hex = Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
 
 class BinaryCursor {
   protected view: DataView;
@@ -77,8 +90,8 @@ class BinaryWriter extends BinaryCursor {
 }
 
 export function envelopeToBytes(envelope: Envelope): Uint8Array<ArrayBuffer> {
-  // header: 1 random, some magic, 1 version, 8 for t, 2 mod length, 4 ct length
-  const headerSize = 16 + MAGIC_BYTES.byteLength;
+  // header: 16 UUID, some magic, 1 version, 8 for t, 2 mod length, 4 ct length
+  const headerSize = 31 + MAGIC_BYTES.byteLength;
   const totalSize =
     headerSize +
     envelope.n.byteLength +
@@ -90,8 +103,7 @@ export function envelopeToBytes(envelope: Envelope): Uint8Array<ArrayBuffer> {
   const bytes = new Uint8Array(totalSize);
   const writer = new BinaryWriter(bytes);
 
-  // random byte for downstream text blobs to be distinguishable
-  writer.writeUint8(envelope.iv[0] ?? 0);
+  writer.writeBytes(uuidToBytes(envelope.uuid));
 
   writer.writeBytes(MAGIC_BYTES);
   writer.writeUint8(envelope.v);
@@ -112,7 +124,7 @@ export function envelopeToBytes(envelope: Envelope): Uint8Array<ArrayBuffer> {
 export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
   const reader = new BinaryReader(bytes);
 
-  reader.readUint8(); // skip random byte
+  const uuid = bytesToUUID(reader.readBytes(16));
 
   const magicBytes = reader.readBytes(MAGIC_BYTES.byteLength);
   if (
@@ -137,5 +149,5 @@ export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
   const iv = reader.readBytes(12);
   const ciphertext = reader.readBytes(ciphertextLength);
 
-  return { v, t, n, x, salt, iv, ciphertext };
+  return { v, uuid, t, n, x, salt, iv, ciphertext };
 }

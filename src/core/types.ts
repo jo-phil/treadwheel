@@ -12,6 +12,7 @@ export interface Puzzle {
 
 export interface Envelope extends Puzzle, Cipher {
   v: 1;
+  uuid: string;
 }
 
 export type JSONPrimitive = string | number | boolean | null;

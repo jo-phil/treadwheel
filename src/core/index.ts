@@ -18,7 +18,8 @@ export async function sealFromPrimes(
     solution.fill(0);
   }
 
-  const envelope: Envelope = { v: 1, ...puzzle, ...cipher };
+  const uuid = crypto.randomUUID();
+  const envelope: Envelope = { v: 1, uuid, ...puzzle, ...cipher };
   return envelopeToBytes(envelope);
 }
 
