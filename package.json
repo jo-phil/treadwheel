@@ -43,7 +43,8 @@
         "types": "./dist/browser/index.d.ts",
         "import": "./dist/browser/index.js"
       }
-    }
+    },
+    "./widget": "./dist/browser/widget.js"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.6",
