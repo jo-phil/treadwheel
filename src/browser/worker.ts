@@ -8,7 +8,7 @@ self.onmessage = async (e: MessageEvent) => {
     const isError = error instanceof Error;
     self.postMessage({
       success: false,
-      error: isError ? error.message : String(error ?? 'Unknown error'),
+      error: isError ? error.message : String(error ?? 'unknown error'),
     });
   }
 };

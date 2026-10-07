@@ -54,7 +54,7 @@ class BinaryReader extends BinaryCursor {
   public readBytes(length: number): Uint8Array<ArrayBuffer> {
     const until = this.offset + length;
     if (until > this.bytes.byteLength) {
-      throw new Error('Not enough bytes to read');
+      throw new Error('not enough bytes to read');
     }
 
     const bytes = this.bytes.subarray(this.offset, until);
@@ -131,10 +131,10 @@ export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
     magicBytes.byteLength !== MAGIC_BYTES.byteLength ||
     !magicBytes.every((b, i) => b === MAGIC_BYTES[i])
   )
-    throw new Error('Invalid magic bytes');
+    throw new Error('invalid magic bytes');
 
   const v = reader.readUint8();
-  if (v !== 1) throw new Error(`Unsupported version: ${v}`);
+  if (v !== 1) throw new Error(`unsupported version: ${v}`);
 
   const modulusLength = reader.readUint16();
   const ciphertextLength = reader.readUint32();
