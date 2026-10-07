@@ -60,7 +60,7 @@ jobs:
         run: pnpm check
 
       - name: Install Playwright browsers
-        run: pnpm playwright install --with-deps chromium firefox
+        run: pnpm playwright install --with-deps chromium firefox webkit
 
       - name: Run tests with coverage
         run: |
