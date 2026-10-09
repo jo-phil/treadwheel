@@ -14,10 +14,3 @@ export interface Envelope extends Puzzle, Cipher {
   v: 1;
   uuid: string;
 }
-
-export type JSONPrimitive = string | number | boolean | null;
-export type JSONSerializable =
-  | JSONPrimitive
-  | { toJSON(): unknown }
-  | JSONSerializable[]
-  | { [key: string]: JSONSerializable | undefined };
