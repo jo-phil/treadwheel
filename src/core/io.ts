@@ -1,6 +1,6 @@
 import type { Envelope } from './types.js';
 
-const MAGIC_BYTES = new TextEncoder().encode('Treadwheel');
+const MAGIC_BYTES = new Uint8Array([0xb7, 0x0f, 0xff]);
 
 class BinaryCursor {
   protected view: DataView;
