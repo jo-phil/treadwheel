@@ -37,9 +37,13 @@ class Widget extends HTMLElement {
       button.disabled = true;
     });
 
-    const plaintext = await unsealInWorker(envelope);
-    this.setAttribute('status', 'success');
-    this.textContent = plaintext;
+    try {
+      const plaintext = await unsealInWorker(envelope);
+      this.setAttribute('status', 'success');
+      this.textContent = plaintext;
+    } catch (error) {
+      this.setAttribute('status', 'error');
+    }
   };
 
   render() {
@@ -97,9 +101,9 @@ class Widget extends HTMLElement {
           border: 1px solid #bbb;
           border-radius: 6px;
 
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-position: center;
         }
 
         :host([status="processing"]) button::before {
@@ -110,12 +114,15 @@ class Widget extends HTMLElement {
         }
 
         :host([status="success"]) button::before {
-          content: '✓';
-          color: #fff;
           border-color: #16a34a;
           background-color: #16a34a;
-          font-size: 20px;
-          font-weight: 600;
+          background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0ibTE4IDgtOCA5LTQtNCIvPjwvc3ZnPg==");
+        }
+
+        :host([status="error"]) button::before {
+          border-color: #dc2626;
+          background-color: #dc2626;
+          background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTE3IDcgNyAxN003IDdsMTAgMTAiLz48L3N2Zz4=");
         }
 
         button::after {
@@ -128,6 +135,10 @@ class Widget extends HTMLElement {
 
         :host([status="success"]) button::after {
           content: 'Verified';
+        }
+        
+        :host([status="error"]) button::after {
+          content: 'Verification failed';
         }
 
         :host([layout="block"][status="success"]) article {
@@ -148,7 +159,8 @@ class Widget extends HTMLElement {
           pointer-events: none;
         }
 
-        :host([layout="floating"][status="processing"]) article {
+        :host([layout="floating"][status="processing"]) article,
+        :host([layout="floating"][status="error"]) article {
           opacity: 1;
           transition: opacity 100ms ease;
           pointer-events: auto;
