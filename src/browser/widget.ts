@@ -54,7 +54,7 @@ class Widget extends HTMLElement {
           all: initial;
           display: block;
           box-sizing: border-box;
-          width: 300px;
+          width: min(280px, 100dvw);
           border-radius: 10px;
           color: #111;
           background: #fff;
