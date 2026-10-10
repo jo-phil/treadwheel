@@ -29,6 +29,9 @@
   "browser": "./dist/browser/index.js",
   "types": "./dist/node/index.d.ts",
   "bin": "./dist/node/cli.js",
+  "sideEffects": [
+    "./dist/browser/widget.js"
+  ],
   "exports": {
     ".": {
       "node": {
