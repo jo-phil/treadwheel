@@ -13,7 +13,7 @@ commands:
 
 options:
   -t, --time TIME   time parameter (number of squarings) of the time-lock puzzle
-                    (default: 0x10000)
+                    (default: 250000)
   -h, --help        display this help message
 `;
 
@@ -23,7 +23,7 @@ const { values, positionals } = parseArgs({
     time: {
       type: 'string',
       short: 't',
-      default: '0x10000',
+      default: '250_000',
     },
     help: {
       type: 'boolean',
