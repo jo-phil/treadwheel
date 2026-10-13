@@ -31,8 +31,8 @@ class TreadwheelWidget extends HTMLElement {
     if (!envelope) return;
 
     this.setAttribute('status', 'processing');
-    const button = this.shadowRoot?.querySelector('button');
-    if (button) button.disabled = true;
+    const status = this.shadowRoot?.getElementById('status');
+    if (status) status.textContent = 'Verifying…';
     this.querySelectorAll('button').forEach((button) => {
       button.disabled = true;
     });
@@ -40,9 +40,11 @@ class TreadwheelWidget extends HTMLElement {
     try {
       const plaintext = await unsealInWorker(envelope);
       this.setAttribute('status', 'success');
+      if (status) status.textContent = 'Verified';
       this.textContent = plaintext;
     } catch (error) {
       this.setAttribute('status', 'error');
+      if (status) status.textContent = 'Verification failed';
     }
   };
 
@@ -70,11 +72,7 @@ class TreadwheelWidget extends HTMLElement {
 
         button {
           all: unset;
-          box-sizing: border-box;
-          position: relative;
           width: 100%;
-          padding: 16px 16px 12px 52px;
-          border-radius: 6px;
           cursor: pointer;
         }
 
@@ -82,15 +80,23 @@ class TreadwheelWidget extends HTMLElement {
           outline: revert;
         }
 
-        button:disabled {
-          cursor: default;
+        button, :host([status]) #status {
+          position: relative;
+          box-sizing: border-box;
+          min-height: 48px;
+          padding: 16px 16px 12px 52px;
+          border-radius: 6px;
         }
 
-        :host([status="processing"]) button:disabled {
+        :host([status]) button {
+          display: none;
+        }
+        
+        :host([status="processing"]) #status {
           cursor: wait;
         }
 
-        button::before {
+        button::before, :host([status]) #status::before {
           content: '';
           position: absolute;
           left: 14px;
@@ -106,38 +112,22 @@ class TreadwheelWidget extends HTMLElement {
           background-position: center;
         }
 
-        :host([status="processing"]) button::before {
+        :host([status="processing"]) #status::before {
           border-radius: 50%;
           border-color: transparent transparent #111 #111;
           animation: spin 1s linear infinite;
         }
 
-        :host([status="success"]) button::before {
+        :host([status="success"]) #status::before {
           border-color: #16a34a;
           background-color: #16a34a;
           background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0ibTE4IDgtOCA5LTQtNCIvPjwvc3ZnPg==");
         }
 
-        :host([status="error"]) button::before {
+        :host([status="error"]) #status::before {
           border-color: #dc2626;
           background-color: #dc2626;
           background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTE3IDcgNyAxN003IDdsMTAgMTAiLz48L3N2Zz4=");
-        }
-
-        button::after {
-          content: "I'm not a robot";
-        }
-
-        :host([status="processing"]) button::after {
-          content: 'Verifying…';
-        }
-
-        :host([status="success"]) button::after {
-          content: 'Verified';
-        }
-        
-        :host([status="error"]) button::after {
-          content: 'Verification failed';
         }
 
         :host([layout="block"][status="success"]) article {
@@ -190,7 +180,8 @@ class TreadwheelWidget extends HTMLElement {
       </style>
       <slot></slot>
       <article>
-        <button></button>
+        <button>I'm not a robot</button>
+        <div id="status" role="status"></div>
         <footer>
           Protected by
           <a
