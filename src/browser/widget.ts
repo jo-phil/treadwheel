@@ -1,6 +1,6 @@
 import { unsealInWorker } from './index.js';
 
-class Widget extends HTMLElement {
+class TreadwheelWidget extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -207,4 +207,4 @@ class Widget extends HTMLElement {
   }
 }
 
-customElements.define('treadwheel-widget', Widget);
+customElements.define('treadwheel-widget', TreadwheelWidget);
