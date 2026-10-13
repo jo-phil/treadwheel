@@ -56,16 +56,20 @@ export function mint(
   const y = modExp(x, exponent, n);
 
   return {
-    puzzle: { n: bigIntToBytes(n, 256), x: bigIntToBytes(x, 256), t },
+    puzzle: {
+      modulus: bigIntToBytes(n, 256),
+      base: bigIntToBytes(x, 256),
+      time: t,
+    },
     solution: bigIntToBytes(y, 256),
   };
 }
 
 export function solve(puzzle: Puzzle): Uint8Array<ArrayBuffer> {
-  const n = bytesToBigInt(puzzle.n);
-  let y = bytesToBigInt(puzzle.x);
+  const n = bytesToBigInt(puzzle.modulus);
+  let y = bytesToBigInt(puzzle.base);
 
-  for (let i = 0n; i < puzzle.t; i++) {
+  for (let i = 0n; i < puzzle.time; i++) {
     y = (y * y) % n;
   }
   return bigIntToBytes(y, 256);

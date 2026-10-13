@@ -5,9 +5,9 @@ export interface Cipher {
 }
 
 export interface Puzzle {
-  n: Uint8Array<ArrayBuffer>;
-  x: Uint8Array<ArrayBuffer>;
-  t: bigint;
+  modulus: Uint8Array<ArrayBuffer>;
+  base: Uint8Array<ArrayBuffer>;
+  time: bigint;
 }
 
 export interface Envelope extends Puzzle, Cipher {

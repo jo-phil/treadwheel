@@ -79,8 +79,8 @@ export function envelopeToBytes(envelope: Envelope): Uint8Array<ArrayBuffer> {
   const headerSize = MAGIC_BYTES.byteLength + 15;
   const totalSize =
     headerSize +
-    envelope.n.byteLength +
-    envelope.x.byteLength +
+    envelope.modulus.byteLength +
+    envelope.base.byteLength +
     envelope.salt.byteLength +
     envelope.iv.byteLength +
     envelope.ciphertext.byteLength;
@@ -91,12 +91,12 @@ export function envelopeToBytes(envelope: Envelope): Uint8Array<ArrayBuffer> {
   writer.writeBytes(MAGIC_BYTES);
   writer.writeUint8(envelope.v);
 
-  writer.writeUint16(envelope.n.byteLength);
+  writer.writeUint16(envelope.modulus.byteLength);
   writer.writeUint32(envelope.ciphertext.byteLength);
 
-  writer.writeBigUInt64(envelope.t);
-  writer.writeBytes(envelope.n);
-  writer.writeBytes(envelope.x);
+  writer.writeBigUInt64(envelope.time);
+  writer.writeBytes(envelope.modulus);
+  writer.writeBytes(envelope.base);
 
   writer.writeBytes(envelope.salt);
   writer.writeBytes(envelope.iv);
@@ -121,13 +121,13 @@ export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
   const modulusLength = reader.readUint16();
   const ciphertextLength = reader.readUint32();
 
-  const t = reader.readBigUInt64();
-  const n = reader.readBytes(modulusLength);
-  const x = reader.readBytes(modulusLength);
+  const time = reader.readBigUInt64();
+  const modulus = reader.readBytes(modulusLength);
+  const base = reader.readBytes(modulusLength);
 
   const salt = reader.readBytes(32);
   const iv = reader.readBytes(12);
   const ciphertext = reader.readBytes(ciphertextLength);
 
-  return { v, t, n, x, salt, iv, ciphertext };
+  return { v, time, modulus, base, salt, iv, ciphertext };
 }
