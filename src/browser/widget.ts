@@ -55,7 +55,6 @@ class TreadwheelWidget extends HTMLElement {
         article {
           all: initial;
           display: block;
-          box-sizing: border-box;
           width: min(280px, 100dvw);
           border-radius: 10px;
           color: #111;
@@ -68,6 +67,38 @@ class TreadwheelWidget extends HTMLElement {
             Inter, Roboto, "Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial,
             sans-serif;
           font-size: 16px;
+          line-height: 1.25;
+          user-select: none;
+        }
+
+        :host([layout="block"][status="success"]) article {
+          display: none;
+        }
+
+        :host([layout="floating"]) {
+          display: inline-block;
+          anchor-name: --host;
+        }
+
+        :host([layout="floating"]) article {
+          position: fixed;
+          position-anchor: --host;
+          position-area: block-end span-inline-end;
+          z-index: 1000000;
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        :host([layout="floating"][status="processing"]) article,
+        :host([layout="floating"][status="error"]) article {
+          opacity: 1;
+          transition: opacity 100ms ease;
+          pointer-events: auto;
+        }
+        
+        :host([layout="floating"][status="success"]) article {
+          transition: opacity 200ms ease-in;
+          transition-delay: 500ms;
         }
 
         button {
@@ -106,10 +137,6 @@ class TreadwheelWidget extends HTMLElement {
           margin-top: -11px;
           border: 1px solid #bbb;
           border-radius: 6px;
-
-          background-repeat: no-repeat;
-          background-size: contain;
-          background-position: center;
         }
 
         :host([status="processing"]) #status::before {
@@ -128,36 +155,6 @@ class TreadwheelWidget extends HTMLElement {
           border-color: #dc2626;
           background-color: #dc2626;
           background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTE3IDcgNyAxN003IDdsMTAgMTAiLz48L3N2Zz4=");
-        }
-
-        :host([layout="block"][status="success"]) article {
-          display: none;
-        }
-
-        :host([layout="floating"]) {
-          display: inline-block;
-          anchor-name: --host;
-        }
-
-        :host([layout="floating"]) article {
-          position: fixed;
-          position-anchor: --host;
-          position-area: block-end span-inline-end;
-          z-index: 1000000;
-          opacity: 0;
-          pointer-events: none;
-        }
-
-        :host([layout="floating"][status="processing"]) article,
-        :host([layout="floating"][status="error"]) article {
-          opacity: 1;
-          transition: opacity 100ms ease;
-          pointer-events: auto;
-        }
-        
-        :host([layout="floating"][status="success"]) article {
-          transition: opacity 200ms ease-in;
-          transition-delay: 500ms;
         }
 
         footer {
