@@ -108,9 +108,8 @@ class Widget extends HTMLElement {
 
         :host([status="processing"]) button::before {
           border-radius: 50%;
-          border-color: transparent transparent #333 #333;
-          border-top-width: 2px;
-          animation: spin 900ms linear infinite;
+          border-color: transparent transparent #111 #111;
+          animation: spin 1s linear infinite;
         }
 
         :host([status="success"]) button::before {
