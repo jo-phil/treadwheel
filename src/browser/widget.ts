@@ -41,7 +41,12 @@ class TreadwheelWidget extends HTMLElement {
       const plaintext = await unsealInWorker(envelope);
       this.setAttribute('status', 'success');
       if (status) status.textContent = 'Verified';
-      this.textContent = plaintext;
+
+      if (this.getAttribute('output') === 'html') {
+        this.innerHTML = plaintext;
+      } else {
+        this.textContent = plaintext;
+      }
     } catch (error) {
       this.setAttribute('status', 'error');
       if (status) status.textContent = 'Verification failed';
