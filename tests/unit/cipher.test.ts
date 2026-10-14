@@ -6,10 +6,12 @@ import fixture from '../fixtures/v1.json' with { type: 'json' };
 
 describe('cipher', () => {
   it('preserves data integrity', async () => {
+    const data = new TextEncoder().encode(fixture.plaintext);
     const keyData = crypto.getRandomValues(new Uint8Array(32));
-    const encrypted = await encrypt(fixture.plaintext, keyData);
+
+    const encrypted = await encrypt(data, keyData);
     const decrypted = await decrypt(encrypted, keyData);
 
-    expect(decrypted).toBe(fixture.plaintext);
+    expect(decrypted).toStrictEqual(data);
   });
 });

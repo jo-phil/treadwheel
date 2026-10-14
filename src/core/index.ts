@@ -3,17 +3,21 @@ import { bytesToEnvelope, envelopeToBytes } from './io.js';
 import { mint, solve } from './puzzle.js';
 import type { Cipher, Envelope } from './types.js';
 
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+
 export async function sealFromPrimes(
-  content: string,
+  plaintext: string,
   t: bigint,
   p: bigint,
   q: bigint,
 ): Promise<Uint8Array<ArrayBuffer>> {
+  const payload = encoder.encode(plaintext);
   const { puzzle, solution } = mint(p, q, t);
 
   let cipher: Cipher;
   try {
-    cipher = await encrypt(content, solution);
+    cipher = await encrypt(payload, solution);
   } finally {
     solution.fill(0);
   }
@@ -28,9 +32,12 @@ export async function unsealBytes(
   const envelope: Envelope = bytesToEnvelope(bytes);
   const solution = solve(envelope);
 
+  let payload: Uint8Array<ArrayBuffer>;
   try {
-    return await decrypt(envelope, solution);
+    payload = await decrypt(envelope, solution);
   } finally {
     solution.fill(0);
   }
+
+  return decoder.decode(payload);
 }

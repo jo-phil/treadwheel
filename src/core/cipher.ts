@@ -1,5 +1,7 @@
 import type { Cipher } from './types.js';
 
+const infoBytes = new TextEncoder().encode('treadwheel');
+
 async function deriveKey(
   keyData: BufferSource,
   salt: BufferSource,
@@ -17,7 +19,7 @@ async function deriveKey(
       name: 'HKDF',
       hash: 'SHA-256',
       salt: salt,
-      info: new TextEncoder().encode('treadwheel'),
+      info: infoBytes,
     },
     baseKey,
     { name: 'AES-GCM', length: 256 },
@@ -27,7 +29,7 @@ async function deriveKey(
 }
 
 export async function encrypt(
-  content: string,
+  payload: Uint8Array<ArrayBuffer>,
   keyData: BufferSource,
 ): Promise<Cipher> {
   const salt = globalThis.crypto.getRandomValues(new Uint8Array(32));
@@ -37,7 +39,7 @@ export async function encrypt(
   const encryptedBuffer = await globalThis.crypto.subtle.encrypt(
     { name: 'AES-GCM', iv: iv },
     derivedKey,
-    new TextEncoder().encode(content),
+    payload,
   );
 
   return {
@@ -50,12 +52,12 @@ export async function encrypt(
 export async function decrypt(
   cipher: Cipher,
   keyData: BufferSource,
-): Promise<string> {
+): Promise<Uint8Array<ArrayBuffer>> {
   const derivedKey = await deriveKey(keyData, cipher.salt);
   const decryptedBuffer = await globalThis.crypto.subtle.decrypt(
     { name: 'AES-GCM', iv: cipher.iv },
     derivedKey,
     cipher.ciphertext,
   );
-  return new TextDecoder().decode(decryptedBuffer);
+  return new Uint8Array(decryptedBuffer);
 }
