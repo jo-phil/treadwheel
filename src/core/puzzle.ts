@@ -2,10 +2,8 @@ import type { Puzzle } from './types.js';
 
 export function bytesToBigInt(bytes: Uint8Array): bigint {
   let result = 0n;
-  let shift = (bytes.length - 1) * 8;
-  for (const byte of bytes) {
-    result |= BigInt(byte) << BigInt(shift);
-    shift -= 8;
+  for (let i = 0; i < bytes.length; i++) {
+    result = (result << 8n) | BigInt(bytes[i]!);
   }
   return result;
 }
