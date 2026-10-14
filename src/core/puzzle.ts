@@ -29,9 +29,10 @@ export function mint(
   { time, modulusLength }: PuzzleParams,
 ): { puzzle: Puzzle; solution: bigint } {
   const modulusByteLength = Math.ceil(modulusLength / 8);
+
   const modulus = p * q;
   const phi = (p - 1n) * (q - 1n);
-  const base = randomBigInt(modulus, modulusLength);
+  const base = randomBigInt(modulus, modulusByteLength);
   const exponent = modExp(2n, time, phi);
   const solution = modExp(base, exponent, modulus);
 
