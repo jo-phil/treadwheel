@@ -26,10 +26,10 @@ export async function sealFromPrimes(
   return envelopeToBytes(envelope);
 }
 
-export async function unsealBytes(
+export async function unsealFromBytes(
   bytes: Uint8Array<ArrayBuffer>,
 ): Promise<string> {
-  const envelope: Envelope = bytesToEnvelope(bytes);
+  const envelope = bytesToEnvelope(bytes);
   const solution = solve(envelope);
 
   let payload: Uint8Array<ArrayBuffer>;

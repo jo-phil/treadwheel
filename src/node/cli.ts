@@ -67,14 +67,14 @@ async function main(): Promise<void> {
         return;
       }
 
-      const output = await seal(payload, t);
-      process.stdout.write(`${output}\n`);
+      const envelope = await seal(payload, t);
+      process.stdout.write(`${envelope}\n`);
       break;
     }
 
     case 'unseal': {
-      const output = await unseal(payload);
-      process.stdout.write(`${output}\n`);
+      const plaintext = await unseal(payload);
+      process.stdout.write(`${plaintext}\n`);
       break;
     }
 

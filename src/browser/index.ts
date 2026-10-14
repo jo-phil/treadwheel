@@ -5,14 +5,14 @@ import { unseal } from './unseal.js';
 export type { Cipher, Puzzle };
 export { seal, unseal };
 
-export async function unsealInWorker(token: string): Promise<string> {
+export async function unsealInWorker(envelope: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const workerUrl = new URL('./worker.js', import.meta.url);
     const worker = new Worker(workerUrl, { type: 'module' });
 
     worker.onmessage = (e) => {
       worker.terminate();
-      if (e.data.success) resolve(e.data.content);
+      if (e.data.success) resolve(e.data.plaintext);
       else reject(new Error(e.data.error));
     };
 
@@ -21,6 +21,6 @@ export async function unsealInWorker(token: string): Promise<string> {
       reject(err);
     };
 
-    worker.postMessage(token);
+    worker.postMessage(envelope);
   });
 }

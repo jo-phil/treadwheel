@@ -7,14 +7,14 @@ import { unseal } from './unseal.js';
 export type { Cipher, Puzzle };
 export { seal, unseal };
 
-export async function unsealInWorker(token: string): Promise<string> {
+export async function unsealInWorker(envelope: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const workerUrl = new URL('./worker.js', import.meta.url);
     const worker = new Worker(workerUrl);
 
     worker.on('message', (res) => {
       worker.terminate();
-      if (res.success) resolve(res.content);
+      if (res.success) resolve(res.plaintext);
       else reject(new Error(res.error));
     });
 
@@ -23,6 +23,6 @@ export async function unsealInWorker(token: string): Promise<string> {
       reject(err);
     });
 
-    worker.postMessage(token);
+    worker.postMessage(envelope);
   });
 }

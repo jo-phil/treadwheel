@@ -1,6 +1,6 @@
-import { unsealBytes } from '../core/index.js';
+import { unsealFromBytes } from '../core/index.js';
 import { base64UrlToBytes } from './codec.js';
 
-export function unseal(token: string): Promise<string> {
-  return unsealBytes(base64UrlToBytes(token));
+export function unseal(envelope: string): Promise<string> {
+  return unsealFromBytes(base64UrlToBytes(envelope));
 }

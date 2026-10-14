@@ -2,8 +2,8 @@ import { unseal } from './unseal.js';
 
 self.onmessage = async (e: MessageEvent) => {
   try {
-    const content = await unseal(e.data);
-    self.postMessage({ success: true, content });
+    const plaintext = await unseal(e.data);
+    self.postMessage({ success: true, plaintext });
   } catch (error) {
     const isError = error instanceof Error;
     self.postMessage({

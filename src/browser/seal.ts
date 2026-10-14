@@ -2,7 +2,7 @@ import { sealFromPrimes } from '../core/index.js';
 import { bytesToBigInt } from '../core/puzzle.js';
 import { base64UrlToBytes, bytesToBase64Url } from './codec.js';
 
-export async function seal(content: string, t: bigint): Promise<string> {
+export async function seal(plaintext: string, t: bigint): Promise<string> {
   const keyPair = await globalThis.crypto.subtle.generateKey(
     {
       name: 'RSA-OAEP',
@@ -22,5 +22,5 @@ export async function seal(content: string, t: bigint): Promise<string> {
   const p = bytesToBigInt(base64UrlToBytes(jwk.p));
   const q = bytesToBigInt(base64UrlToBytes(jwk.q));
 
-  return bytesToBase64Url(await sealFromPrimes(content, t, p, q));
+  return bytesToBase64Url(await sealFromPrimes(plaintext, t, p, q));
 }

@@ -7,10 +7,10 @@ if (!parentPort) {
 }
 
 const port = parentPort;
-port.on('message', async (data) => {
+port.on('message', async (envelope) => {
   try {
-    const content = await unseal(data);
-    port.postMessage({ success: true, content });
+    const plaintext = await unseal(envelope);
+    port.postMessage({ success: true, plaintext });
   } catch (error) {
     const isError = error instanceof Error;
     port.postMessage({

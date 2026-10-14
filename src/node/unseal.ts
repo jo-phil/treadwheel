@@ -1,5 +1,5 @@
-import { unsealBytes } from '../core/index.js';
+import { unsealFromBytes } from '../core/index.js';
 
-export function unseal(token: string): Promise<string> {
-  return unsealBytes(Buffer.from(token, 'base64url'));
+export function unseal(envelope: string): Promise<string> {
+  return unsealFromBytes(Buffer.from(envelope, 'base64url'));
 }
