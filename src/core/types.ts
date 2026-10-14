@@ -5,8 +5,9 @@ export interface Cipher {
 }
 
 export interface Puzzle {
-  modulus: Uint8Array<ArrayBuffer>;
-  base: Uint8Array<ArrayBuffer>;
+  modulusByteLength: number;
+  modulus: bigint;
+  base: bigint;
   time: bigint;
 }
 
@@ -16,10 +17,7 @@ export interface Envelope extends Puzzle, Cipher {
 
 export interface SealOptions {
   time?: bigint;
+  modulusLength?: number;
 }
 
-export interface PuzzleParams {
-  p: bigint;
-  q: bigint;
-  time: bigint;
-}
+export interface PuzzleParams extends Required<SealOptions> {}

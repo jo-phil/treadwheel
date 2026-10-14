@@ -1,24 +1,5 @@
-import type { Puzzle } from './types.js';
-
-export function bytesToBigInt(bytes: Uint8Array): bigint {
-  let result = 0n;
-  for (let i = 0; i < bytes.length; i++) {
-    result = (result << 8n) | BigInt(bytes[i]!);
-  }
-  return result;
-}
-
-function bigIntToBytes(
-  bigint: bigint,
-  byteLength: number,
-): Uint8Array<ArrayBuffer> {
-  const buffer = new Uint8Array(byteLength);
-  for (let i = 0; i < byteLength; i++) {
-    const shift = BigInt((byteLength - 1 - i) * 8);
-    buffer[i] = Number((bigint >> shift) & 0xffn);
-  }
-  return buffer;
-}
+import { bytesToBigInt } from './io.js';
+import type { Puzzle, PuzzleParams } from './types.js';
 
 function modExp(base: bigint, exponent: bigint, modulus: bigint): bigint {
   if (modulus === 1n) return 0n;
@@ -45,30 +26,21 @@ function randomBigInt(strictUpperBound: bigint, byteLength: number): bigint {
 export function mint(
   p: bigint,
   q: bigint,
-  t: bigint,
-): { puzzle: Puzzle; solution: Uint8Array<ArrayBuffer> } {
-  const n = p * q;
+  { time, modulusLength }: PuzzleParams,
+): { puzzle: Puzzle; solution: bigint } {
+  const modulusByteLength = Math.ceil(modulusLength / 8);
+  const modulus = p * q;
   const phi = (p - 1n) * (q - 1n);
-  const x = randomBigInt(n, 256);
-  const exponent = modExp(2n, t, phi);
-  const y = modExp(x, exponent, n);
+  const base = randomBigInt(modulus, modulusLength);
+  const exponent = modExp(2n, time, phi);
+  const solution = modExp(base, exponent, modulus);
 
-  return {
-    puzzle: {
-      modulus: bigIntToBytes(n, 256),
-      base: bigIntToBytes(x, 256),
-      time: t,
-    },
-    solution: bigIntToBytes(y, 256),
-  };
+  return { puzzle: { modulusByteLength, modulus, base, time }, solution };
 }
 
-export function solve(puzzle: Puzzle): Uint8Array<ArrayBuffer> {
-  const n = bytesToBigInt(puzzle.modulus);
-  let y = bytesToBigInt(puzzle.base);
-
-  for (let i = 0n; i < puzzle.time; i++) {
-    y = (y * y) % n;
+export function solve({ modulus, base, time }: Puzzle): bigint {
+  for (let i = 0n; i < time; i++) {
+    base = (base * base) % modulus;
   }
-  return bigIntToBytes(y, 256);
+  return base;
 }

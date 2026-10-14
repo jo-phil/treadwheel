@@ -74,33 +74,61 @@ class BinaryWriter extends BinaryCursor {
   }
 }
 
-export function envelopeToBytes(envelope: Envelope): Uint8Array<ArrayBuffer> {
+export function bytesToBigInt(bytes: Uint8Array): bigint {
+  let result = 0n;
+  for (let i = 0; i < bytes.length; i++) {
+    result = (result << 8n) | BigInt(bytes[i]!);
+  }
+  return result;
+}
+
+export function bigIntToBytes(
+  bigint: bigint,
+  byteLength: number,
+): Uint8Array<ArrayBuffer> {
+  const buffer = new Uint8Array(byteLength);
+  for (let i = 0; i < byteLength; i++) {
+    const shift = BigInt((byteLength - 1 - i) * 8);
+    buffer[i] = Number((bigint >> shift) & 0xffn);
+  }
+  return buffer;
+}
+
+export function envelopeToBytes({
+  v,
+  modulusByteLength,
+  time,
+  modulus,
+  base,
+  salt,
+  iv,
+  ciphertext,
+}: Envelope): Uint8Array<ArrayBuffer> {
   // header: some magic bytes, 1 version, 8 for t, 2 mod length, 4 ct length
   const headerSize = MAGIC_BYTES.byteLength + 15;
   const totalSize =
     headerSize +
-    envelope.modulus.byteLength +
-    envelope.base.byteLength +
-    envelope.salt.byteLength +
-    envelope.iv.byteLength +
-    envelope.ciphertext.byteLength;
+    2 * modulusByteLength +
+    salt.byteLength +
+    iv.byteLength +
+    ciphertext.byteLength;
 
   const bytes = new Uint8Array(totalSize);
   const writer = new BinaryWriter(bytes);
 
   writer.writeBytes(MAGIC_BYTES);
-  writer.writeUint8(envelope.v);
+  writer.writeUint8(v);
 
-  writer.writeUint16(envelope.modulus.byteLength);
-  writer.writeUint32(envelope.ciphertext.byteLength);
+  writer.writeUint16(modulusByteLength);
+  writer.writeUint32(ciphertext.byteLength);
 
-  writer.writeBigUInt64(envelope.time);
-  writer.writeBytes(envelope.modulus);
-  writer.writeBytes(envelope.base);
+  writer.writeBigUInt64(time);
+  writer.writeBytes(bigIntToBytes(modulus, modulusByteLength));
+  writer.writeBytes(bigIntToBytes(base, modulusByteLength));
 
-  writer.writeBytes(envelope.salt);
-  writer.writeBytes(envelope.iv);
-  writer.writeBytes(envelope.ciphertext);
+  writer.writeBytes(salt);
+  writer.writeBytes(iv);
+  writer.writeBytes(ciphertext);
 
   return bytes;
 }
@@ -118,16 +146,16 @@ export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
   const v = reader.readUint8();
   if (v !== 1) throw new Error(`unsupported version: ${v}`);
 
-  const modulusLength = reader.readUint16();
+  const modulusByteLength = reader.readUint16();
   const ciphertextLength = reader.readUint32();
 
   const time = reader.readBigUInt64();
-  const modulus = reader.readBytes(modulusLength);
-  const base = reader.readBytes(modulusLength);
+  const modulus = bytesToBigInt(reader.readBytes(modulusByteLength));
+  const base = bytesToBigInt(reader.readBytes(modulusByteLength));
 
   const salt = reader.readBytes(32);
   const iv = reader.readBytes(12);
   const ciphertext = reader.readBytes(ciphertextLength);
 
-  return { v, time, modulus, base, salt, iv, ciphertext };
+  return { v, modulusByteLength, time, modulus, base, salt, iv, ciphertext };
 }

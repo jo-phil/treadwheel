@@ -11,9 +11,12 @@ commands:
   seal    encrypt a payload using a time-lock puzzle
   unseal  solve a time-lock puzzle to decrypt its payload
 
-options:
-  -t, --time TIME   time parameter (number of squarings) of the time-lock puzzle
-                    (default: ${SEAL_DEFAULTS.time})
+seal options:
+  -t, --time <squarings>       sequential squarings required to solve the puzzle
+                               (default: ${SEAL_DEFAULTS.time})
+  -m, --modulus-length <bits>  bit-length of the modulus (default: ${SEAL_DEFAULTS.modulusLength}) 
+
+global options:
   -h, --help        display this help message
 `;
 
@@ -24,6 +27,11 @@ const { values, positionals } = parseArgs({
       type: 'string',
       short: 't',
       default: `${SEAL_DEFAULTS.time}`,
+    },
+    modulusLength: {
+      type: 'string',
+      short: 'm',
+      default: `${SEAL_DEFAULTS.modulusLength}`,
     },
     help: {
       type: 'boolean',
@@ -67,7 +75,18 @@ async function main(): Promise<void> {
         return;
       }
 
-      const envelope = await seal(payload, { time });
+      let modulusLength: number;
+      try {
+        modulusLength = parseInt(values.modulusLength);
+      } catch {
+        process.stderr.write(
+          `invalid modulus length value: ${values.modulusLength}\n`,
+        );
+        process.exitCode = 2;
+        return;
+      }
+
+      const envelope = await seal(payload, { time, modulusLength });
       process.stdout.write(`${envelope}\n`);
       break;
     }

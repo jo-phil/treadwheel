@@ -1,5 +1,5 @@
 import { decrypt, encrypt } from './cipher.js';
-import { bytesToEnvelope, envelopeToBytes } from './io.js';
+import { bigIntToBytes, bytesToEnvelope, envelopeToBytes } from './io.js';
 import { mint, solve } from './puzzle.js';
 import type { Cipher, Envelope, PuzzleParams } from './types.js';
 
@@ -8,16 +8,19 @@ const decoder = new TextDecoder();
 
 export async function sealFromPrimes(
   plaintext: string,
-  { p, q, time }: PuzzleParams,
+  p: bigint,
+  q: bigint,
+  puzzleParams: PuzzleParams,
 ): Promise<Uint8Array<ArrayBuffer>> {
   const payload = encoder.encode(plaintext);
-  const { puzzle, solution } = mint(p, q, time);
+  const { puzzle, solution } = mint(p, q, puzzleParams);
+  const keyData = bigIntToBytes(solution, puzzle.modulusByteLength);
 
   let cipher: Cipher;
   try {
-    cipher = await encrypt(payload, solution);
+    cipher = await encrypt(payload, keyData);
   } finally {
-    solution.fill(0);
+    keyData.fill(0);
   }
 
   const envelope: Envelope = { v: 1, ...puzzle, ...cipher };
@@ -29,12 +32,13 @@ export async function unsealFromBytes(
 ): Promise<string> {
   const envelope = bytesToEnvelope(bytes);
   const solution = solve(envelope);
+  const keyData = bigIntToBytes(solution, envelope.modulusByteLength);
 
   let payload: Uint8Array<ArrayBuffer>;
   try {
-    payload = await decrypt(envelope, solution);
+    payload = await decrypt(envelope, keyData);
   } finally {
-    solution.fill(0);
+    keyData.fill(0);
   }
 
   return decoder.decode(payload);
