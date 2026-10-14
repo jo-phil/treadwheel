@@ -1,10 +1,10 @@
 import { Worker } from 'node:worker_threads';
 
-import type { Cipher, Puzzle } from '../core/types.js';
+import type { SealOptions } from '../core/types.js';
 import { seal } from './seal.js';
 import { unseal } from './unseal.js';
 
-export type { Cipher, Puzzle };
+export type { SealOptions };
 export { seal, unseal };
 
 export async function unsealInWorker(envelope: string): Promise<string> {

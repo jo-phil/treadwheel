@@ -13,3 +13,13 @@ export interface Puzzle {
 export interface Envelope extends Puzzle, Cipher {
   v: 1;
 }
+
+export interface SealOptions {
+  time?: bigint;
+}
+
+export interface PuzzleParams {
+  p: bigint;
+  q: bigint;
+  time: bigint;
+}

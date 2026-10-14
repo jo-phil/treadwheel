@@ -24,7 +24,7 @@ vi.mock('node:worker_threads', async (importOriginal) => {
 
 describe('node', () => {
   it('unseals what it sealed', async () => {
-    const envelope = await seal(fixture.plaintext, 10n);
+    const envelope = await seal(fixture.plaintext, { time: 10n });
     const plaintext = await unseal(envelope);
     expect(plaintext).toBe(fixture.plaintext);
   });

@@ -1,19 +1,17 @@
 import { decrypt, encrypt } from './cipher.js';
 import { bytesToEnvelope, envelopeToBytes } from './io.js';
 import { mint, solve } from './puzzle.js';
-import type { Cipher, Envelope } from './types.js';
+import type { Cipher, Envelope, PuzzleParams } from './types.js';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 export async function sealFromPrimes(
   plaintext: string,
-  t: bigint,
-  p: bigint,
-  q: bigint,
+  { p, q, time }: PuzzleParams,
 ): Promise<Uint8Array<ArrayBuffer>> {
   const payload = encoder.encode(plaintext);
-  const { puzzle, solution } = mint(p, q, t);
+  const { puzzle, solution } = mint(p, q, time);
 
   let cipher: Cipher;
   try {

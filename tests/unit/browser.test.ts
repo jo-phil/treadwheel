@@ -5,7 +5,7 @@ import fixture from '../fixtures/v1.json' with { type: 'json' };
 
 describe('browser', () => {
   it('unseals what it sealed', async () => {
-    const envelope = await seal(fixture.plaintext, 10n);
+    const envelope = await seal(fixture.plaintext, { time: 10n });
     const plaintext = await unseal(envelope);
     expect(plaintext).toBe(fixture.plaintext);
   });

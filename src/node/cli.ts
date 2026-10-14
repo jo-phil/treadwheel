@@ -2,7 +2,7 @@
 
 import { text } from 'node:stream/consumers';
 import { parseArgs } from 'node:util';
-
+import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { seal, unseal } from './index.js';
 
 const USAGE = `usage: treadwheel {seal,unseal} [-t TIME] PAYLOAD
@@ -13,7 +13,7 @@ commands:
 
 options:
   -t, --time TIME   time parameter (number of squarings) of the time-lock puzzle
-                    (default: 250000)
+                    (default: ${SEAL_DEFAULTS.time})
   -h, --help        display this help message
 `;
 
@@ -23,7 +23,7 @@ const { values, positionals } = parseArgs({
     time: {
       type: 'string',
       short: 't',
-      default: '250000',
+      default: `${SEAL_DEFAULTS.time}`,
     },
     help: {
       type: 'boolean',
@@ -58,16 +58,16 @@ async function main(): Promise<void> {
 
   switch (command) {
     case 'seal': {
-      let t: bigint;
+      let time: bigint;
       try {
-        t = BigInt(values.time);
+        time = BigInt(values.time);
       } catch {
         process.stderr.write(`invalid time value: ${values.time}\n`);
         process.exitCode = 2;
         return;
       }
 
-      const envelope = await seal(payload, t);
+      const envelope = await seal(payload, { time });
       process.stdout.write(`${envelope}\n`);
       break;
     }
