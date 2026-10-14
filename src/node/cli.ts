@@ -23,7 +23,7 @@ const { values, positionals } = parseArgs({
     time: {
       type: 'string',
       short: 't',
-      default: '250_000',
+      default: '250000',
     },
     help: {
       type: 'boolean',
