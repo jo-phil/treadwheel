@@ -16,7 +16,7 @@ export interface Envelope extends Puzzle, Cipher {
 }
 
 export interface SealOptions {
-  time?: bigint;
+  time?: number;
   modulusLength?: number;
 }
 

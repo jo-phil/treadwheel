@@ -66,9 +66,9 @@ async function main(): Promise<void> {
 
   switch (command) {
     case 'seal': {
-      let time: bigint;
+      let time: number;
       try {
-        time = BigInt(values.time);
+        time = parseInt(values.time, 10);
       } catch {
         process.stderr.write(`invalid time value: ${values.time}\n`);
         process.exitCode = 2;

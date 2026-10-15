@@ -28,19 +28,20 @@ export function mint(
   q: bigint,
   { time, modulusLength }: PuzzleParams,
 ): { puzzle: Puzzle; solution: bigint } {
-  if (time <= 0n) {
-    throw new Error('time must be positive');
+  if (!Number.isSafeInteger(time) || time < 0) {
+    throw new RangeError('time must be a non-negative safe integer');
   }
 
+  const t = BigInt(time);
   const modulusByteLength = Math.ceil(modulusLength / 8);
 
   const modulus = p * q;
   const phi = (p - 1n) * (q - 1n);
   const base = randomBigInt(modulus, modulusByteLength);
-  const exponent = modExp(2n, time, phi);
+  const exponent = modExp(2n, t, phi);
   const solution = modExp(base, exponent, modulus);
 
-  return { puzzle: { modulusByteLength, modulus, base, time }, solution };
+  return { puzzle: { modulusByteLength, modulus, base, time: t }, solution };
 }
 
 export function solve({ modulus, base, time }: Puzzle): bigint {

@@ -8,7 +8,7 @@ describe('puzzle', () => {
     const p = crypto.generatePrimeSync(1024, { bigint: true });
     const q = crypto.generatePrimeSync(1024, { bigint: true });
 
-    const { puzzle, solution } = mint(p, q, { time: 10n, modulusLength: 2048 });
+    const { puzzle, solution } = mint(p, q, { time: 10, modulusLength: 2048 });
     const sequential = solve(puzzle);
 
     expect(sequential).toStrictEqual(solution);
