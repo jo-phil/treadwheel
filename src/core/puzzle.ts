@@ -28,6 +28,10 @@ export function mint(
   q: bigint,
   { time, modulusLength }: PuzzleParams,
 ): { puzzle: Puzzle; solution: bigint } {
+  if (time <= 0n) {
+    throw new Error('time must be positive');
+  }
+
   const modulusByteLength = Math.ceil(modulusLength / 8);
 
   const modulus = p * q;
