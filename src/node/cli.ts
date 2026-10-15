@@ -77,7 +77,7 @@ async function main(): Promise<void> {
 
       let modulusLength: number;
       try {
-        modulusLength = parseInt(values.modulusLength);
+        modulusLength = parseInt(values.modulusLength, 10);
       } catch {
         process.stderr.write(
           `invalid modulus length value: ${values.modulusLength}\n`,
