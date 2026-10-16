@@ -12,18 +12,15 @@ import type { SealOptions } from '../core/types.js';
  */
 export async function seal(
   plaintext: string,
-  {
-    time = SEAL_DEFAULTS.time,
-    modulusLength = SEAL_DEFAULTS.modulusLength,
-  }: SealOptions = {},
+  options?: SealOptions,
 ): Promise<string> {
-  const pLength = Math.ceil(modulusLength / 2);
-  const qLength = modulusLength - pLength;
+  const config = { ...SEAL_DEFAULTS, ...options };
+
+  const pLength = Math.ceil(config.modulusLength / 2);
+  const qLength = config.modulusLength - pLength;
   const p = crypto.generatePrimeSync(pLength, { bigint: true });
   const q = crypto.generatePrimeSync(qLength, { bigint: true });
-  const envelope = await sealFromPrimes(plaintext, p, q, {
-    time,
-    modulusLength,
-  });
+
+  const envelope = await sealFromPrimes(plaintext, p, q, config);
   return Buffer.from(envelope).toString('base64url');
 }

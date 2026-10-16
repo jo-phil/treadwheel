@@ -12,15 +12,14 @@ import { base64UrlToBytes, bytesToBase64Url } from './codec.js';
  */
 export async function seal(
   plaintext: string,
-  {
-    time = SEAL_DEFAULTS.time,
-    modulusLength = SEAL_DEFAULTS.modulusLength,
-  }: SealOptions = {},
+  options?: SealOptions,
 ): Promise<string> {
+  const config = { ...SEAL_DEFAULTS, ...options };
+
   const keyPair = await globalThis.crypto.subtle.generateKey(
     {
       name: 'RSA-OAEP',
-      modulusLength,
+      modulusLength: config.modulusLength,
       publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
       hash: 'SHA-256',
     },
@@ -36,7 +35,5 @@ export async function seal(
   const p = bytesToBigInt(base64UrlToBytes(jwk.p));
   const q = bytesToBigInt(base64UrlToBytes(jwk.q));
 
-  return bytesToBase64Url(
-    await sealFromPrimes(plaintext, p, q, { time, modulusLength }),
-  );
+  return bytesToBase64Url(await sealFromPrimes(plaintext, p, q, config));
 }
