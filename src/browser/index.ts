@@ -5,6 +5,11 @@ import { unseal } from './unseal.js';
 export type { SealOptions };
 export { seal, unseal };
 
+/**
+ * Unseal an envelope in a web worker.
+ * @param envelope - A Base64URL-encoded envelope.
+ * @returns The decrypted plaintext.
+ */
 export async function unsealInWorker(envelope: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const workerUrl = new URL('./worker.js', import.meta.url);

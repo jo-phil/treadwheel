@@ -4,6 +4,12 @@ import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { sealFromPrimes } from '../core/index.js';
 import type { SealOptions } from '../core/types.js';
 
+/**
+ * Seal plaintext using a time-lock puzzle.
+ * @param plaintext - The plaintext to seal.
+ * @param options - Optional configuration options.
+ * @returns A Base64URL-encoded envelope.
+ */
 export async function seal(
   plaintext: string,
   {

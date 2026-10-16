@@ -1,5 +1,10 @@
 import { unsealFromBytes } from '../core/index.js';
 
-export function unseal(envelope: string): Promise<string> {
+/**
+ * Unseal an envelope by solving its time-lock puzzle.
+ * @param envelope - A Base64URL-encoded envelope.
+ * @returns The decrypted plaintext.
+ */
+export async function unseal(envelope: string): Promise<string> {
   return unsealFromBytes(Buffer.from(envelope, 'base64url'));
 }

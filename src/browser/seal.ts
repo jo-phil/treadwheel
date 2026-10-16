@@ -4,6 +4,12 @@ import { bytesToBigInt } from '../core/io.js';
 import type { SealOptions } from '../core/types.js';
 import { base64UrlToBytes, bytesToBase64Url } from './codec.js';
 
+/**
+ * Seal plaintext using a time-lock puzzle.
+ * @param plaintext - The plaintext to seal.
+ * @param options - Optional configuration options.
+ * @returns A Base64URL-encoded envelope.
+ */
 export async function seal(
   plaintext: string,
   {

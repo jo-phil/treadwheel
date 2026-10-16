@@ -15,8 +15,20 @@ export interface Envelope extends Puzzle, Cipher {
   v: 1;
 }
 
+/**
+ * Optional configuration options for {@link seal}.
+ */
 export interface SealOptions {
+  /**
+   * The number of sequential squarings required to solve the time-lock puzzle.
+   * @default 250_000
+   */
   time?: number;
+
+  /**
+   * The desired bit-length of the puzzle's modulus.
+   * @default 2048
+   */
   modulusLength?: number;
 }
 
