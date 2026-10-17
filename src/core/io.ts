@@ -77,7 +77,7 @@ class BinaryWriter extends BinaryCursor {
 export function bytesToBigInt(bytes: Uint8Array): bigint {
   let result = 0n;
   for (let i = 0; i < bytes.length; i++) {
-    result = (result << 8n) | BigInt(bytes[i]!);
+    result = (result << 8n) | BigInt(bytes[i] as number);
   }
   return result;
 }

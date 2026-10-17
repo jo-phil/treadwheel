@@ -47,7 +47,7 @@ class TreadwheelWidget extends HTMLElement {
       } else {
         this.textContent = plaintext;
       }
-    } catch (error) {
+    } catch {
       this.setAttribute('status', 'error');
       if (status) status.textContent = 'Verification failed';
     }
