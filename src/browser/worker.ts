@@ -1,4 +1,4 @@
-import { unseal } from './unseal.js';
+import { unseal } from './index.js';
 
 self.onmessage = async (e: MessageEvent) => {
   try {
