@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { seal, unseal, unsealInWorker } from '../../src/browser/index.js';
 import { base64UrlToBytes, bytesToBase64Url } from '../../src/browser/codec.js';
+import { seal, unseal, unsealInWorker } from '../../src/browser/index.js';
 import fixture from '../fixtures/v1.json' with { type: 'json' };
 
 describe('browser', () => {
