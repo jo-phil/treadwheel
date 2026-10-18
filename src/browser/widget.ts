@@ -91,19 +91,18 @@ class TreadwheelWidget extends HTMLElement {
           position-area: block-end span-inline-end;
           z-index: 1000000;
           opacity: 0;
-          pointer-events: none;
+          visibility: hidden;
         }
 
         :host([layout="floating"][status="processing"]) article,
         :host([layout="floating"][status="error"]) article {
           opacity: 1;
-          transition: opacity 100ms ease;
-          pointer-events: auto;
+          visibility: visible;
+          transition: opacity .1s ease-out;
         }
         
         :host([layout="floating"][status="success"]) article {
-          transition: opacity 200ms ease-in;
-          transition-delay: 500ms;
+          transition: opacity .2s ease-in .8s, visibility 1s;
         }
 
         button {
