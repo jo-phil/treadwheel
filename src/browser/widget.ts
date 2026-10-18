@@ -82,13 +82,11 @@ class TreadwheelWidget extends HTMLElement {
 
         :host([layout="floating"]) {
           display: inline-block;
-          anchor-name: --host;
+          position: relative;
         }
 
         :host([layout="floating"]) article {
-          position: fixed;
-          position-anchor: --host;
-          position-area: block-end span-inline-end;
+          position: absolute;
           z-index: 1000000;
           opacity: 0;
           visibility: hidden;
@@ -100,9 +98,23 @@ class TreadwheelWidget extends HTMLElement {
           visibility: visible;
           transition: opacity .1s ease-out;
         }
-        
+
         :host([layout="floating"][status="success"]) article {
           transition: opacity .2s ease-in .8s, visibility 1s;
+        }
+
+        @supports (position-area: block-end span-inline-end) {
+          :host([layout="floating"]) {
+            position: static;
+            anchor-name: --host;
+          }
+
+          :host([layout="floating"]) article {
+            position: fixed;
+            position-anchor: --host;
+            position-area: block-end span-inline-end;
+            position-try-fallbacks: flip-inline;
+          }
         }
 
         button {
