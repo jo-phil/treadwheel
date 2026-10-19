@@ -42,10 +42,22 @@ class TreadwheelWidget extends HTMLElement {
       this.setAttribute('status', 'success');
       if (status) status.textContent = 'Verified';
 
+      const output = document.createElement('template');
       if (this.getAttribute('output') === 'html') {
-        this.innerHTML = plaintext;
+        output.innerHTML = plaintext;
       } else {
-        this.textContent = plaintext;
+        output.content.textContent = plaintext;
+      }
+
+      if (this.getAttribute('layout') === 'floating') {
+        this.replaceChildren(output.content);
+        this.shadowRoot?.addEventListener(
+          'transitionend',
+          () => this.replaceWith(...this.childNodes),
+          { once: true },
+        );
+      } else {
+        this.replaceWith(output.content);
       }
     } catch {
       this.setAttribute('status', 'error');
@@ -76,31 +88,27 @@ class TreadwheelWidget extends HTMLElement {
           user-select: none;
         }
 
-        :host([layout="block"][status="success"]) article {
-          display: none;
-        }
-
         :host([layout="floating"]) {
           display: inline-block;
           position: relative;
         }
 
         :host([layout="floating"]) article {
+          display: none;
           position: absolute;
           z-index: 1000000;
           opacity: 0;
-          visibility: hidden;
+          transition: opacity .2s ease-in .8s;
+        }
+        
+        :host([layout="floating"][status]) article {
+          display: block;
         }
 
         :host([layout="floating"][status="processing"]) article,
         :host([layout="floating"][status="error"]) article {
           opacity: 1;
-          visibility: visible;
           transition: opacity .1s ease-out;
-        }
-
-        :host([layout="floating"][status="success"]) article {
-          transition: opacity .2s ease-in .8s, visibility 1s;
         }
 
         @supports (position-area: block-end span-inline-end) {
