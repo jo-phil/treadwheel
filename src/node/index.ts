@@ -47,8 +47,7 @@ export async function unseal(envelope: string): Promise<string> {
  */
 export async function unsealInWorker(envelope: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const workerUrl = new URL('./worker.js', import.meta.url);
-    const worker = new Worker(workerUrl);
+    const worker = new Worker(new URL('./worker.js', import.meta.url));
 
     worker.on('message', (res) => {
       worker.terminate();
