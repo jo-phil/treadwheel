@@ -1,7 +1,9 @@
 import { unsealInWorker } from './index.js';
 
+const html = String.raw;
+
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = html`
   <style>
     article {
       all: initial;
