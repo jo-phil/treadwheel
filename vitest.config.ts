@@ -12,14 +12,14 @@ export default defineConfig({
       {
         test: {
           include: ['tests/**/*.test.ts'],
-          exclude: ['tests/**/browser.test.ts'],
+          exclude: ['**/browser.test.ts', '**/widget.test.ts'],
           name: 'node',
           environment: 'node',
         },
       },
       {
         test: {
-          include: ['tests/**/browser.test.ts'],
+          include: ['tests/**/browser.test.ts', 'tests/**/widget.test.ts'],
           name: 'browser',
           browser: {
             provider: playwright(),
