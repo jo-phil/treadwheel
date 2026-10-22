@@ -5,22 +5,22 @@ import { parseArgs } from 'node:util';
 import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { seal, unseal } from './index.js';
 
-const USAGE = `usage: treadwheel {seal,unseal} [-t TIME] PAYLOAD
+const USAGE = `Usage: treadwheel <command> [<options>] <payload>
 
-commands:
-  seal    encrypt a payload using a time-lock puzzle
-  unseal  solve a time-lock puzzle to decrypt its payload
+Commands:
+  seal      Seal plaintext using a time-lock puzzle
+  unseal    Unseal an envelope by solving its time-lock puzzle
 
-seal options:
-  -t, --time <squarings>       sequential squarings required to solve the puzzle
-                               (default: ${SEAL_DEFAULTS.time})
-  -m, --modulus-length <bits>  bit-length of the modulus (default: ${SEAL_DEFAULTS.modulusLength}) 
+Options for seal:
+  -t, --time <squarings>       Number of sequential squarings required to solve
+                               the puzzle (default: ${SEAL_DEFAULTS.time})
+  -m, --modulus-length <bits>  Desired bit-length of the modulus (default: ${SEAL_DEFAULTS.modulusLength}) 
 
-global options:
-  -h, --help        display this help message
+Global options:
+  -h, --help      Display this help message
 `;
 
-const { values, positionals } = parseArgs({
+const PARSE_ARGS_CONFIG = {
   allowPositionals: true,
   options: {
     time: {
@@ -28,7 +28,7 @@ const { values, positionals } = parseArgs({
       short: 't',
       default: `${SEAL_DEFAULTS.time}`,
     },
-    modulusLength: {
+    'modulus-length': {
       type: 'string',
       short: 'm',
       default: `${SEAL_DEFAULTS.modulusLength}`,
@@ -38,67 +38,112 @@ const { values, positionals } = parseArgs({
       short: 'h',
     },
   },
-});
+} as const;
 
-async function readStdin(): Promise<string | undefined> {
-  return process.stdin.isTTY ? undefined : await text(process.stdin);
+async function runSeal(
+  plaintext: string | undefined,
+  options: { time?: string; 'modulus-length'?: string },
+): Promise<void> {
+  const time = Number(options.time);
+  if (!Number.isSafeInteger(time) || time < 0) {
+    process.stderr.write(
+      "Option '-t, --time <value>' argument must be a non-negative safe " +
+        `integer; got ${options.time}\n`,
+    );
+    process.exitCode = 2;
+    return;
+  }
+
+  const modulusLength = Number(options['modulus-length']);
+  if (!Number.isSafeInteger(modulusLength) || modulusLength <= 0) {
+    process.stderr.write(
+      "Option '-m, --modulus-length <value>' argument must be a positive " +
+        `safe integer; got ${options['modulus-length']}\n`,
+    );
+    process.exitCode = 2;
+    return;
+  }
+
+  if (plaintext === undefined) {
+    process.stderr.write(
+      "Command 'seal' requires plaintext as argument or from stdin\n",
+    );
+    process.exitCode = 2;
+    return;
+  }
+
+  const envelope = await seal(plaintext, { time, modulusLength });
+  process.stdout.write(`${envelope}\n`);
+}
+
+async function runUnseal(envelope: string | undefined): Promise<void> {
+  if (envelope === undefined) {
+    process.stderr.write(
+      "Command 'unseal' requires an envelope as argument or from stdin\n",
+    );
+    process.exitCode = 2;
+    return;
+  }
+
+  const plaintext = await unseal(envelope.trim());
+  process.stdout.write(`${plaintext}\n`);
 }
 
 async function main(): Promise<void> {
+  let values: {
+    time: string;
+    'modulus-length': string;
+    help?: boolean;
+  };
+  let positionals: string[];
+
+  try {
+    ({ values, positionals } = parseArgs(PARSE_ARGS_CONFIG));
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      'code' in error &&
+      typeof error.code === 'string' &&
+      error.code.startsWith('ERR_PARSE_ARGS')
+    ) {
+      process.stderr.write(`${error.message}\n`);
+      process.exitCode = 2;
+      return;
+    }
+    throw error;
+  }
+
   if (values.help) {
     process.stderr.write(USAGE);
     return;
   }
 
-  if (positionals.length < 1 || positionals.length > 2) {
+  if (positionals.length > 2) {
+    process.stderr.write('Too many positional arguments\n');
+    process.exitCode = 2;
+    return;
+  }
+
+  let [command, payload] = positionals;
+  if (command === undefined) {
     process.stderr.write(USAGE);
     process.exitCode = 2;
     return;
   }
 
-  const command = positionals[0];
-  const payload = positionals.length === 2 ? positionals[1] : await readStdin();
   if (payload === undefined) {
-    process.stderr.write('no payload provided\n');
-    process.exitCode = 2;
-    return;
+    payload = process.stdin.isTTY ? undefined : await text(process.stdin);
   }
 
   switch (command) {
-    case 'seal': {
-      let time: number;
-      try {
-        time = parseInt(values.time, 10);
-      } catch {
-        process.stderr.write(`invalid time value: ${values.time}\n`);
-        process.exitCode = 2;
-        return;
-      }
-
-      let modulusLength: number;
-      try {
-        modulusLength = parseInt(values.modulusLength, 10);
-      } catch {
-        process.stderr.write(
-          `invalid modulus length value: ${values.modulusLength}\n`,
-        );
-        process.exitCode = 2;
-        return;
-      }
-
-      const envelope = await seal(payload, { time, modulusLength });
-      process.stdout.write(`${envelope}\n`);
+    case 'seal':
+      await runSeal(payload, values);
       break;
-    }
-
-    case 'unseal': {
-      const plaintext = await unseal(payload);
-      process.stdout.write(`${plaintext}\n`);
+    case 'unseal':
+      await runUnseal(payload);
       break;
-    }
-
     default:
-      process.stderr.write(`unknown command: ${command}\n`);
+      process.stderr.write(`Unknown command '${command}'\n`);
       process.exitCode = 2;
   }
 }
@@ -107,7 +152,7 @@ try {
   await main();
 } catch (err) {
   process.stderr.write(
-    `unexpected error: ${err instanceof Error ? err.message : String(err)}\n`,
+    `Error: ${err instanceof Error ? err.message : String(err)}\n`,
   );
   process.exitCode = 1;
 }
