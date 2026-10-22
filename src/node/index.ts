@@ -7,6 +7,17 @@ import type { SealOptions } from '../core/types.js';
 
 export type { SealOptions };
 
+function generatePrimeAsync(size: number): Promise<bigint> {
+  return new Promise((resolve, reject) => {
+    const callback = (err: Error | null, prime: bigint) => {
+      if (err) reject(err);
+      else resolve(prime);
+    };
+
+    crypto.generatePrime(size, { bigint: true }, callback);
+  });
+}
+
 /**
  * Seal plaintext using a time-lock puzzle.
  *
@@ -22,8 +33,8 @@ export async function seal(
 
   const pLength = Math.ceil(config.modulusLength / 2);
   const qLength = config.modulusLength - pLength;
-  const p = crypto.generatePrimeSync(pLength, { bigint: true });
-  const q = crypto.generatePrimeSync(qLength, { bigint: true });
+  const p = await generatePrimeAsync(pLength);
+  const q = await generatePrimeAsync(qLength);
 
   const envelope = await sealFromPrimes(plaintext, p, q, config);
   return Buffer.from(envelope).toString('base64url');
