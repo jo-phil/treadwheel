@@ -33,8 +33,10 @@ export async function seal(
 
   const pLength = Math.ceil(config.modulusLength / 2);
   const qLength = config.modulusLength - pLength;
-  const p = await generatePrimeAsync(pLength);
-  const q = await generatePrimeAsync(qLength);
+  const [p, q] = await Promise.all([
+    generatePrimeAsync(pLength),
+    generatePrimeAsync(qLength),
+  ]);
 
   const envelope = await sealFromPrimes(plaintext, p, q, config);
   return Buffer.from(envelope).toString('base64url');
