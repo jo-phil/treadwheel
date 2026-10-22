@@ -2,6 +2,7 @@
 
 import { text } from 'node:stream/consumers';
 import { parseArgs } from 'node:util';
+import pkg from '../../package.json' with { type: 'json' };
 import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { seal, unseal } from './index.js';
 
@@ -18,6 +19,7 @@ Options for seal:
 
 Global options:
   -h, --help      Display this help message
+  -V, --version   Display version number
 `;
 
 const PARSE_ARGS_CONFIG = {
@@ -36,6 +38,10 @@ const PARSE_ARGS_CONFIG = {
     help: {
       type: 'boolean',
       short: 'h',
+    },
+    version: {
+      type: 'boolean',
+      short: 'V',
     },
   },
 } as const;
@@ -94,6 +100,7 @@ async function main(): Promise<void> {
     time: string;
     'modulus-length': string;
     help?: boolean;
+    version?: boolean;
   };
   let positionals: string[];
 
@@ -115,6 +122,11 @@ async function main(): Promise<void> {
 
   if (values.help) {
     process.stdout.write(USAGE);
+    return;
+  }
+
+  if (values.version) {
+    process.stdout.write(`${pkg.version}\n`);
     return;
   }
 
