@@ -114,7 +114,7 @@ async function main(): Promise<void> {
   }
 
   if (values.help) {
-    process.stderr.write(USAGE);
+    process.stdout.write(USAGE);
     return;
   }
 
