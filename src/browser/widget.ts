@@ -137,7 +137,7 @@ template.innerHTML = html`
   </style>
   <slot></slot>
   <article>
-    <button>I'm not a robot</button>
+    <button type="button">I'm not a robot</button>
     <div id="status" role="status"></div>
     <footer>
       Protected by
