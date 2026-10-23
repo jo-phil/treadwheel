@@ -51,10 +51,10 @@ async function runSeal(
   options: { time?: string; 'modulus-length'?: string },
 ): Promise<void> {
   const time = Number(options.time);
-  if (!Number.isSafeInteger(time) || time < 0) {
+  if (!Number.isSafeInteger(time) || time < 0 || options.time?.trim() === '') {
     process.stderr.write(
       "Option '-t, --time <value>' argument must be a non-negative safe " +
-        `integer; got ${options.time}\n`,
+        `integer; got '${options.time}'\n`,
     );
     process.exitCode = 2;
     return;
@@ -64,7 +64,7 @@ async function runSeal(
   if (!Number.isSafeInteger(modulusLength) || modulusLength <= 0) {
     process.stderr.write(
       "Option '-m, --modulus-length <value>' argument must be a positive " +
-        `safe integer; got ${options['modulus-length']}\n`,
+        `safe integer; got '${options['modulus-length']}'\n`,
     );
     process.exitCode = 2;
     return;
