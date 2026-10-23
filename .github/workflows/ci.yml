@@ -47,9 +47,27 @@ jobs:
     name: Test browser and Node.js with coverage
     needs: [lint, test-node]
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --user 1001
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Validate Playwright version
+        run: |
+          LOCK_VERSION=$(grep -oP "(?:^|\s|[\"'])playwright@\K[^:\"'\s]+" pnpm-lock.yaml | head -n1)
+          CONTAINER_VERSION=$(grep -oP '"driverVersion":\s*"\K[^"]+' /ms-playwright/.docker-info)
+          
+          if [ -z "$LOCK_VERSION" ] || [ -z "$CONTAINER_VERSION" ]; then
+            echo "::error::Failed to parse versions (lockfile: '${LOCK_VERSION}', container: '${CONTAINER_VERSION}')"
+            exit 1
+          fi
+          if [ "$LOCK_VERSION" != "$CONTAINER_VERSION" ]; then
+            echo "::error::Playwright version mismatch (lockfile: $LOCK_VERSION, container: $CONTAINER_VERSION)"
+            exit 1
+          fi
+          echo "Playwright versions match ($LOCK_VERSION)"
 
       - name: Setup pnpm and install dependencies
         uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
@@ -58,9 +76,6 @@ jobs:
 
       - name: Run type-check
         run: pnpm check
-
-      - name: Install Playwright browsers
-        run: pnpm playwright install --with-deps chromium firefox webkit
 
       - name: Run tests with coverage
         run: |
