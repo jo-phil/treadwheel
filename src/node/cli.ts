@@ -46,6 +46,10 @@ const PARSE_ARGS_CONFIG = {
   },
 } as const;
 
+async function readStdin(): Promise<string | undefined> {
+  return process.stdin.isTTY ? undefined : await text(process.stdin);
+}
+
 async function runSeal(
   plaintext: string | undefined,
   options: { time?: string; 'modulus-length'?: string },
@@ -70,6 +74,7 @@ async function runSeal(
     return;
   }
 
+  plaintext = plaintext ?? (await readStdin());
   if (plaintext === undefined) {
     process.stderr.write(
       "Command 'seal' requires plaintext as argument or from stdin\n",
@@ -83,6 +88,7 @@ async function runSeal(
 }
 
 async function runUnseal(envelope: string | undefined): Promise<void> {
+  envelope = envelope ?? (await readStdin());
   if (envelope === undefined) {
     process.stderr.write(
       "Command 'unseal' requires an envelope as argument or from stdin\n",
@@ -141,10 +147,6 @@ async function main(): Promise<void> {
     process.stderr.write(USAGE);
     process.exitCode = 2;
     return;
-  }
-
-  if (payload === undefined) {
-    payload = process.stdin.isTTY ? undefined : await text(process.stdin);
   }
 
   switch (command) {
