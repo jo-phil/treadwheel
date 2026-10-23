@@ -166,8 +166,6 @@ class TreadwheelWidget extends HTMLElement {
         if (this.hasAttribute('layout')) return;
         if (this.querySelector('button')) {
           this.setAttribute('layout', 'floating');
-        } else {
-          this.setAttribute('layout', 'block');
         }
       },
       { once: true },
