@@ -1,6 +1,6 @@
 import type { Cipher } from './types.js';
 
-const infoBytes = new TextEncoder().encode('treadwheel');
+const INFO_BYTES = new TextEncoder().encode('treadwheel-v1');
 
 async function deriveKey(
   keyData: BufferSource,
@@ -19,7 +19,7 @@ async function deriveKey(
       name: 'HKDF',
       hash: 'SHA-256',
       salt: salt,
-      info: infoBytes,
+      info: INFO_BYTES,
     },
     baseKey,
     { name: 'AES-GCM', length: 256 },
