@@ -142,7 +142,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  let [command, payload] = positionals;
+  const [command, payload] = positionals;
   if (command === undefined) {
     process.stderr.write(USAGE);
     process.exitCode = 2;
