@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, server } from 'vitest/browser';
 
+import { seal } from '../../src/browser/index.js';
 import '../../src/browser/widget.js';
 import fixture from '../fixtures/v1.json' with { type: 'json' };
 
@@ -54,6 +55,22 @@ describe('widget', () => {
       await expect.element(widget).not.toBeInTheDocument();
     },
   );
+
+  it('outputs HTML when attribute `output` is set to "html"', async () => {
+    const html = `<a href="#">${fixture.plaintext}</a>`;
+    const envelope = await seal(html, { time: 10 });
+
+    widget.setAttribute('envelope', envelope);
+    widget.setAttribute('output', 'html');
+    document.body.appendChild(widget);
+
+    await page.getByRole('button', { name: "I'm not a robot" }).click();
+    const status = page.getByRole('status');
+    expect(status).toHaveTextContent('Verifying…');
+
+    const link = page.getByRole('link', { name: fixture.plaintext });
+    await expect.element(link).toBeVisible();
+  });
 
   it('shows error message for invalid envelope', async () => {
     widget.setAttribute('envelope', 'invalid-envelope');
