@@ -43,4 +43,74 @@ describe('CLI', () => {
     expect(unsealResult.exitCode).toBe(0);
     expect(unsealResult.stdout.trim()).toBe(fixture.plaintext);
   });
+
+  it('displays help', async () => {
+    const result = await runCLI(['--help']);
+    expect(result.stderr).toBe('');
+    expect(result.stdout).toContain('Usage:');
+    expect(result.exitCode).toBe(0);
+  });
+
+  it('displays version', async () => {
+    const result = await runCLI(['--version']);
+    expect(result.stderr).toBe('');
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout.trim()).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+
+  it('rejects calls without subcommand and displays help', async () => {
+    const result = await runCLI([]);
+    expect(result.stderr).toContain('Usage:');
+    expect(result.exitCode).toBe(2);
+  });
+
+  it('rejects unknown command', async () => {
+    const result = await runCLI(['unknown']);
+    expect(result.stderr).toContain('Unknown command');
+    expect(result.exitCode).toBe(2);
+  });
+
+  it('rejects time option without argument', async () => {
+    const result = await runCLI(['seal', '--time']);
+    expect(result.stderr).toContain('time');
+    expect(result.exitCode).toBe(2);
+  });
+
+  it.for(['', '-1', '0.1', 'a'])(
+    "rejects invalid time argument '%s'",
+    async (time) => {
+      const result = await runCLI([
+        'seal',
+        `--time='${time}'`,
+        fixture.plaintext,
+      ]);
+      expect(result.stderr).toContain('time');
+      expect(result.exitCode).toBe(2);
+    },
+  );
+
+  it('rejects modulus length option without argument', async () => {
+    const result = await runCLI(['seal', '--modulus-length']);
+    expect(result.stderr).toContain('modulus-length');
+    expect(result.exitCode).toBe(2);
+  });
+
+  it.for(['', '0', '0.1', 'a'])(
+    "rejects invalid modulus length argument '%s'",
+    async (modulusLength) => {
+      const result = await runCLI([
+        'seal',
+        `--modulus-length='${modulusLength}'`,
+        fixture.plaintext,
+      ]);
+      expect(result.stderr).toContain('modulus-length');
+      expect(result.exitCode).toBe(2);
+    },
+  );
+
+  it('rejects additional positional arguments', async () => {
+    const result = await runCLI(['seal', 'plaintext', 'extra'], '');
+    expect(result.stderr).toContain('Too many positional arguments');
+    expect(result.exitCode).toBe(2);
+  });
 });
