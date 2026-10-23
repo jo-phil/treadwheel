@@ -59,10 +59,15 @@ jobs:
           LOCK_VERSION=$(grep -oP "(?:^|\s|[\"'])playwright@\K[^:\"'\s]+" pnpm-lock.yaml | head -n1)
           CONTAINER_VERSION=$(grep -oP '"driverVersion":\s*"\K[^"]+' /ms-playwright/.docker-info)
           
+          if [ -z "$LOCK_VERSION" ] || [ -z "$CONTAINER_VERSION" ]; then
+            echo "::error::Failed to parse versions (lockfile: '${LOCK_VERSION}', container: '${CONTAINER_VERSION}')"
+            exit 1
+          fi
           if [ "$LOCK_VERSION" != "$CONTAINER_VERSION" ]; then
             echo "::error::Playwright version mismatch (lockfile: $LOCK_VERSION, container: $CONTAINER_VERSION)"
             exit 1
           fi
+          echo "Playwright versions match ($LOCK_VERSION)"
 
       - name: Setup pnpm and install dependencies
         uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
