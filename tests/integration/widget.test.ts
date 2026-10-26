@@ -104,5 +104,5 @@ describe('widget', () => {
 
     await expect.element(document.body).toHaveTextContent(fixture.plaintext);
     expect(widget).not.toBeInTheDocument();
-  })
+  });
 });
