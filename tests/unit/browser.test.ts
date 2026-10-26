@@ -21,6 +21,12 @@ describe('browser', () => {
     expect(plaintext).toBe(fixture.plaintext);
   });
 
+  it('propagates error in web worker', async () => {
+    await expect(unsealInWorker('invalid-envelope')).rejects.toThrow(
+      'invalid magic bytes',
+    );
+  });
+
   it('decodes and encodes Base64URL with fallback', async () => {
     const base64Url = fixture.envelope;
 

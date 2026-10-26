@@ -38,4 +38,10 @@ describe('node', () => {
     const plaintext = await unsealInWorker(fixture.envelope);
     expect(plaintext).toBe(fixture.plaintext);
   });
+
+  it('propagates error in worker thread', async () => {
+    await expect(unsealInWorker('invalid-envelope')).rejects.toThrow(
+      'invalid magic bytes',
+    );
+  });
 });
