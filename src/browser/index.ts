@@ -58,7 +58,7 @@ export async function unseal(envelope: string): Promise<string> {
  * @param options - Optional configuration options.
  * @returns The decrypted plaintext.
  */
-export async function unsealInWorker(
+export function unsealInWorker(
   envelope: string,
   options?: UnsealInWorkerOptions,
 ): Promise<string> {
