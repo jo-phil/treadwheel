@@ -1,7 +1,7 @@
 import { decrypt, encrypt } from './cipher.js';
 import { bigIntToBytes, bytesToEnvelope, envelopeToBytes } from './io.js';
 import { mint, solve } from './puzzle.js';
-import type { Cipher, Envelope, PuzzleParams } from './types.js';
+import type { Cipher, PuzzleParams } from './types.js';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -23,8 +23,7 @@ export async function sealFromPrimes(
     keyData.fill(0);
   }
 
-  const envelope: Envelope = { v: 1, ...puzzle, ...cipher };
-  return envelopeToBytes(envelope);
+  return envelopeToBytes({ v: 1, ...puzzle, ...cipher });
 }
 
 export async function unsealFromBytes(

@@ -74,7 +74,7 @@ async function runSeal(
     return;
   }
 
-  plaintext = plaintext ?? (await readStdin());
+  plaintext ??= await readStdin();
   if (plaintext === undefined) {
     process.stderr.write(
       "Command 'seal' requires plaintext as argument or from stdin\n",
@@ -88,7 +88,7 @@ async function runSeal(
 }
 
 async function runUnseal(envelope: string | undefined): Promise<void> {
-  envelope = envelope ?? (await readStdin());
+  envelope ??= await readStdin();
   if (envelope === undefined) {
     process.stderr.write(
       "Command 'unseal' requires an envelope as argument or from stdin\n",

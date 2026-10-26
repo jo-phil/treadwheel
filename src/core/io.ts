@@ -137,10 +137,7 @@ export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
   const reader = new BinaryReader(bytes);
 
   const magicBytes = reader.readBytes(MAGIC_BYTES.byteLength);
-  if (
-    magicBytes.byteLength !== MAGIC_BYTES.byteLength ||
-    !magicBytes.every((b, i) => b === MAGIC_BYTES[i])
-  )
+  if (!magicBytes.every((b, i) => b === MAGIC_BYTES[i]))
     throw new Error('invalid magic bytes');
 
   const v = reader.readUint8();

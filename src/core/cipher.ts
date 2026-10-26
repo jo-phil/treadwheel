@@ -15,12 +15,7 @@ async function deriveKey(
   );
 
   return await globalThis.crypto.subtle.deriveKey(
-    {
-      name: 'HKDF',
-      hash: 'SHA-256',
-      salt: salt,
-      info: INFO_BYTES,
-    },
+    { name: 'HKDF', hash: 'SHA-256', salt: salt, info: INFO_BYTES },
     baseKey,
     { name: 'AES-GCM', length: 256 },
     false,
@@ -34,19 +29,17 @@ export async function encrypt(
 ): Promise<Cipher> {
   const salt = globalThis.crypto.getRandomValues(new Uint8Array(32));
   const iv = globalThis.crypto.getRandomValues(new Uint8Array(12));
-  const derivedKey = await deriveKey(keyData, salt);
 
-  const encryptedBuffer = await globalThis.crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv: iv },
-    derivedKey,
-    payload,
+  const derivedKey = await deriveKey(keyData, salt);
+  const ciphertext = new Uint8Array(
+    await globalThis.crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      derivedKey,
+      payload,
+    ),
   );
 
-  return {
-    salt,
-    iv,
-    ciphertext: new Uint8Array(encryptedBuffer),
-  };
+  return { salt, iv, ciphertext };
 }
 
 export async function decrypt(
@@ -54,10 +47,11 @@ export async function decrypt(
   keyData: BufferSource,
 ): Promise<Uint8Array<ArrayBuffer>> {
   const derivedKey = await deriveKey(keyData, cipher.salt);
-  const decryptedBuffer = await globalThis.crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv: cipher.iv },
-    derivedKey,
-    cipher.ciphertext,
+  return new Uint8Array(
+    await globalThis.crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: cipher.iv },
+      derivedKey,
+      cipher.ciphertext,
+    ),
   );
-  return new Uint8Array(decryptedBuffer);
 }
