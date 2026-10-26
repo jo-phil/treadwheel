@@ -154,6 +154,7 @@ template.innerHTML = html`
 
 class TreadwheelWidget extends HTMLElement {
   private _shadow = this.attachShadow({ mode: 'open' });
+  private _abortController?: AbortController;
 
   constructor() {
     super();
@@ -172,6 +173,14 @@ class TreadwheelWidget extends HTMLElement {
     );
   }
 
+  connectedCallback() {
+    this._abortController = new AbortController();
+  }
+
+  disconnectedCallback() {
+    this._abortController?.abort();
+  }
+
   private _handleClick = async (e: Event) => {
     const target = e.target as HTMLElement | null;
     if (!target?.closest('button')) return;
@@ -187,7 +196,9 @@ class TreadwheelWidget extends HTMLElement {
     });
 
     try {
-      const plaintext = await unsealInWorker(envelope);
+      const plaintext = await unsealInWorker(envelope, {
+        signal: this._abortController?.signal,
+      });
       this.setAttribute('status', 'success');
       if (status) status.textContent = 'Verified';
 
@@ -208,9 +219,17 @@ class TreadwheelWidget extends HTMLElement {
       } else {
         this.replaceWith(output.content);
       }
-    } catch {
-      this.setAttribute('status', 'error');
-      if (status) status.textContent = 'Verification failed';
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        this.removeAttribute('status');
+        if (status) status.textContent = '';
+        this.querySelectorAll('button').forEach((button) => {
+          button.disabled = false;
+        });
+      } else {
+        this.setAttribute('status', 'error');
+        if (status) status.textContent = 'Verification failed';
+      }
     }
   };
 }

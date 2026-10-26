@@ -44,4 +44,23 @@ describe('node', () => {
       'invalid magic bytes',
     );
   });
+
+  it('aborts worker thread execution on signal', async () => {
+    const controller = new AbortController();
+    const promise = unsealInWorker(fixture.envelope, {
+      signal: controller.signal,
+    });
+    controller.abort();
+    await expect(promise).rejects.toThrow('aborted');
+  });
+
+  it('aborts operation for already aborted signal', async () => {
+    const controller = new AbortController();
+    controller.abort();
+    await expect(
+      unsealInWorker(fixture.envelope, {
+        signal: controller.signal,
+      }),
+    ).rejects.toThrow('aborted');
+  });
 });

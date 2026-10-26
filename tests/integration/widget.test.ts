@@ -82,4 +82,27 @@ describe('widget', () => {
 
     await expect.element(status).toHaveTextContent('Verification failed');
   });
+
+  it('aborts when detached and reactivates on reattachment', async () => {
+    const envelope = await seal(fixture.plaintext, { time: 1000 });
+    widget.setAttribute('envelope', envelope);
+    document.body.appendChild(widget);
+
+    const button = page.getByRole('button', { name: "I'm not a robot" });
+    await button.click();
+    const status = page.getByRole('status');
+    expect(status).toHaveTextContent('Verifying…');
+
+    widget.remove();
+    await expect.element(widget).not.toHaveAttribute('status');
+
+    document.body.appendChild(widget);
+    await expect.element(status).toBeEmptyDOMElement();
+
+    await button.click();
+    expect(status).toHaveTextContent('Verifying…');
+
+    await expect.element(document.body).toHaveTextContent(fixture.plaintext);
+    expect(widget).not.toBeInTheDocument();
+  })
 });

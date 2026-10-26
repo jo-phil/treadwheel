@@ -3,7 +3,7 @@ import { Worker } from 'node:worker_threads';
 
 import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { sealFromPrimes, unsealFromBytes } from '../core/index.js';
-import type { SealOptions } from '../core/types.js';
+import type { SealOptions, UnsealInWorkerOptions } from '../core/types.js';
 
 export type { SealOptions };
 
@@ -56,10 +56,17 @@ export async function unseal(envelope: string): Promise<string> {
  * Unseal an envelope in a worker thread.
  *
  * @param envelope - A Base64URL-encoded envelope.
+ * @param options - Optional configuration options.
  * @returns The decrypted plaintext.
  */
-export async function unsealInWorker(envelope: string): Promise<string> {
+export async function unsealInWorker(
+  envelope: string,
+  options?: UnsealInWorkerOptions,
+): Promise<string> {
   return new Promise((resolve, reject) => {
+    if (options?.signal?.aborted) return reject(options.signal.reason);
+    options?.signal?.addEventListener('abort', handleAbort);
+
     const worker = new Worker(new URL('./worker.js', import.meta.url), {
       workerData: envelope,
     });
@@ -67,9 +74,15 @@ export async function unsealInWorker(envelope: string): Promise<string> {
     worker.on('message', resolve);
     worker.on('error', reject);
     worker.on('exit', (code) => {
+      options?.signal?.removeEventListener('abort', handleAbort);
       if (code !== 0) {
         reject(new Error(`Worker stopped with exit code ${code}`));
       }
     });
+
+    function handleAbort(event: Event) {
+      reject((event.target as AbortSignal).reason);
+      worker.terminate();
+    }
   });
 }

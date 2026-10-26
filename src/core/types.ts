@@ -33,3 +33,13 @@ export interface SealOptions {
 }
 
 export interface PuzzleParams extends Required<SealOptions> {}
+
+/**
+ * Optional configuration options for {@link unsealInWorker}.
+ */
+export interface UnsealInWorkerOptions {
+  /**
+   * Signal to abort the operation.
+   */
+  signal?: AbortSignal | undefined;
+}

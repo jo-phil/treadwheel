@@ -1,7 +1,7 @@
 import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { sealFromPrimes, unsealFromBytes } from '../core/index.js';
 import { bytesToBigInt } from '../core/io.js';
-import type { SealOptions } from '../core/types.js';
+import type { SealOptions, UnsealInWorkerOptions } from '../core/types.js';
 import { base64UrlToBytes, bytesToBase64Url } from './codec.js';
 
 export type { SealOptions };
@@ -55,25 +55,42 @@ export async function unseal(envelope: string): Promise<string> {
  * Unseal an envelope in a web worker.
  *
  * @param envelope - A Base64URL-encoded envelope.
+ * @param options - Optional configuration options.
  * @returns The decrypted plaintext.
  */
-export async function unsealInWorker(envelope: string): Promise<string> {
+export async function unsealInWorker(
+  envelope: string,
+  options?: UnsealInWorkerOptions,
+): Promise<string> {
   return new Promise((resolve, reject) => {
+    if (options?.signal?.aborted) return reject(options.signal.reason);
+    options?.signal?.addEventListener('abort', handleAbort);
+
     const worker = new Worker(new URL('./worker.js', import.meta.url), {
       type: 'module',
     });
 
+    const cleanup = () => {
+      worker.terminate();
+      options?.signal?.removeEventListener('abort', handleAbort);
+    };
+
     worker.onmessage = (event) => {
       if (event.data.success) resolve(event.data.plaintext);
       else reject(event.data.error);
-      worker.terminate();
+      cleanup();
     };
 
     worker.onerror = (errorEvent) => {
       errorEvent.preventDefault();
       reject(errorEvent.error ?? new Error(errorEvent.message));
-      worker.terminate();
+      cleanup();
     };
+
+    function handleAbort(event: Event) {
+      reject((event.target as AbortSignal).reason);
+      cleanup();
+    }
 
     worker.postMessage(envelope);
   });
