@@ -153,14 +153,14 @@ template.innerHTML = html`
 `;
 
 class TreadwheelWidget extends HTMLElement {
-  #shadow = this.attachShadow({ mode: 'open' });
+  private _shadow = this.attachShadow({ mode: 'open' });
 
   constructor() {
     super();
 
-    this.#shadow.appendChild(template.content.cloneNode(true));
-    this.#shadow.addEventListener('click', this.handleClick);
-    this.#shadow.querySelector('slot')?.addEventListener(
+    this._shadow.appendChild(template.content.cloneNode(true));
+    this._shadow.addEventListener('click', this._handleClick);
+    this._shadow.querySelector('slot')?.addEventListener(
       'slotchange',
       () => {
         if (this.hasAttribute('layout')) return;
@@ -172,7 +172,7 @@ class TreadwheelWidget extends HTMLElement {
     );
   }
 
-  private handleClick = async (e: Event) => {
+  private _handleClick = async (e: Event) => {
     const target = e.target as HTMLElement | null;
     if (!target?.closest('button')) return;
 
@@ -180,7 +180,7 @@ class TreadwheelWidget extends HTMLElement {
     if (!envelope) return;
 
     this.setAttribute('status', 'processing');
-    const status = this.#shadow.getElementById('status');
+    const status = this._shadow.getElementById('status');
     if (status) status.textContent = 'Verifying…';
     this.querySelectorAll('button').forEach((button) => {
       button.disabled = true;
@@ -200,7 +200,7 @@ class TreadwheelWidget extends HTMLElement {
 
       if (this.getAttribute('layout') === 'floating') {
         this.replaceChildren(output.content);
-        this.#shadow.addEventListener(
+        this._shadow.addEventListener(
           'transitionend',
           () => this.replaceWith(...this.childNodes),
           { once: true },
