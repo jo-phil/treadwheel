@@ -49,7 +49,7 @@ export async function seal(
  * @returns The decrypted plaintext.
  */
 export async function unseal(envelope: string): Promise<string> {
-  return unsealFromBytes(Buffer.from(envelope, 'base64url'));
+  return await unsealFromBytes(Buffer.from(envelope, 'base64url'));
 }
 
 /**

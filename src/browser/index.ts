@@ -48,7 +48,7 @@ export async function seal(
  * @returns The decrypted plaintext.
  */
 export async function unseal(envelope: string): Promise<string> {
-  return unsealFromBytes(base64UrlToBytes(envelope));
+  return await unsealFromBytes(base64UrlToBytes(envelope));
 }
 
 /**
