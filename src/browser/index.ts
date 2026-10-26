@@ -63,15 +63,16 @@ export async function unsealInWorker(envelope: string): Promise<string> {
       type: 'module',
     });
 
-    worker.onmessage = (e) => {
+    worker.onmessage = (event) => {
+      if (event.data.success) resolve(event.data.plaintext);
+      else reject(event.data.error);
       worker.terminate();
-      if (e.data.success) resolve(e.data.plaintext);
-      else reject(new Error(e.data.error));
     };
 
-    worker.onerror = (err) => {
+    worker.onerror = (errorEvent) => {
+      errorEvent.preventDefault();
+      reject(errorEvent.error ?? new Error(errorEvent.message));
       worker.terminate();
-      reject(err);
     };
 
     worker.postMessage(envelope);

@@ -7,10 +7,7 @@ self.onmessage = async (e: MessageEvent) => {
   } catch (error) {
     self.postMessage({
       success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : String(error ?? 'unknown error'),
+      error: error instanceof Error ? error : new Error(String(error)),
     });
   }
 };

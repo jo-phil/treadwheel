@@ -60,19 +60,16 @@ export async function unseal(envelope: string): Promise<string> {
  */
 export async function unsealInWorker(envelope: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const worker = new Worker(new URL('./worker.js', import.meta.url));
-
-    worker.on('message', (res) => {
-      worker.terminate();
-      if (res.success) resolve(res.plaintext);
-      else reject(new Error(res.error));
+    const worker = new Worker(new URL('./worker.js', import.meta.url), {
+      workerData: envelope,
     });
 
-    worker.on('error', (err) => {
-      worker.terminate();
-      reject(err);
+    worker.on('message', resolve);
+    worker.on('error', reject);
+    worker.on('exit', (code) => {
+      if (code !== 0) {
+        reject(new Error(`Worker stopped with exit code ${code}`));
+      }
     });
-
-    worker.postMessage(envelope);
   });
 }
