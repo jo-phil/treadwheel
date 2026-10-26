@@ -7,35 +7,42 @@ import {
   type UserConfig,
 } from 'tsdown';
 
+const tsdownConfig: UserConfig = {
+  platform: 'browser',
+  target: 'es2020',
+  clean: false,
+  dts: false,
+  minify: true,
+};
+
 const inlineWorker: TsdownPlugin = {
   name: 'inline-worker',
   async renderChunk(code) {
     const workerRegex =
-      /const worker =\s*new Worker\(\s*new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\)\s*(?:,\s*\{.*?\}\s*)?\)/gs;
+      /const worker =\s*new Worker\(\s*new URL\(['"]\.\/worker\.js['"],\s*import\.meta\.url\)\s*(?:,\s*\{.*?\}\s*)?;?\)/gs;
 
     const match = workerRegex.exec(code);
     if (!match) return null;
 
     const { bundles } = await build({
+      ...tsdownConfig,
       entry: 'src/browser/worker.ts',
       format: 'iife',
-      minify: true,
       write: false,
-      clean: false,
-      outputOptions: { codeSplitting: false },
+      sourcemap: false,
     });
 
     const chunk = bundles[0]?.chunks[0];
     if (chunk?.type !== 'chunk') throw new Error('failed to build worker');
 
     const replacement = `
-        const url = URL.createObjectURL(new Blob(
-          [${JSON.stringify(chunk.code.trim())}],
-          { type: 'application/javascript' },
-        ));
-        const worker = new Worker(url);
-        URL.revokeObjectURL(url);
-      `;
+      const url = URL.createObjectURL(new Blob(
+        [${JSON.stringify(chunk.code.trim())}],
+        { type: 'application/javascript' },
+      ));
+      const worker = new Worker(url);
+      URL.revokeObjectURL(url);
+    `;
 
     const magicString = new MagicString(code);
     const start = match.index;
@@ -53,22 +60,21 @@ const inlineWorker: TsdownPlugin = {
   },
 };
 
-const tsdownConfig: UserConfig = {
-  outDir: 'dist',
+const tsdownBundleConfig: UserConfig = {
+  ...tsdownConfig,
   format: 'esm',
-  clean: false,
-  dts: false,
   sourcemap: true,
-  minify: true,
   fixedExtension: false,
-  platform: 'browser',
   plugins: [minifyHTML(), inlineWorker],
 };
 
 export default defineConfig([
-  { entry: { 'treadwheel.min': 'src/browser/index.ts' }, ...tsdownConfig },
+  {
+    entry: { 'treadwheel.min': 'src/browser/index.ts' },
+    ...tsdownBundleConfig,
+  },
   {
     entry: { 'treadwheel-widget.min': 'src/browser/widget.ts' },
-    ...tsdownConfig,
+    ...tsdownBundleConfig,
   },
 ]);
