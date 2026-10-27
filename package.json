@@ -77,5 +77,8 @@
     "test:dev": "vitest unit",
     "validate": "pnpm check && pnpm lint && pnpm test"
   },
-  "packageManager": "pnpm@12.9.1"
+  "packageManager": "pnpm@12.9.1",
+  "engines": {
+    "node": ">=22.0.0"
+  }
 }
