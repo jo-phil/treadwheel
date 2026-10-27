@@ -5,7 +5,7 @@ import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { sealFromPrimes, unsealFromBytes } from '../core/index.js';
 import type { SealOptions, UnsealInWorkerOptions } from '../core/types.js';
 
-export type { SealOptions };
+export type { SealOptions, UnsealInWorkerOptions };
 
 function generatePrimeAsync(size: number): Promise<bigint> {
   return new Promise((resolve, reject) => {

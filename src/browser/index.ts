@@ -4,7 +4,7 @@ import { bytesToBigInt } from '../core/io.js';
 import type { SealOptions, UnsealInWorkerOptions } from '../core/types.js';
 import { base64UrlToBytes, bytesToBase64Url } from './codec.js';
 
-export type { SealOptions };
+export type { SealOptions, UnsealInWorkerOptions };
 
 /**
  * Seal plaintext using a time-lock puzzle.
