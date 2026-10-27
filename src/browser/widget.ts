@@ -8,14 +8,13 @@ template.innerHTML = html`
     article {
       all: initial;
       display: block;
-      width: min(280px, 100dvw);
+      box-sizing: border-box;
+      width: min(300px, 100dvw);
+      border: 1px solid rgba(0, 0, 0, 0.12);
       border-radius: 10px;
       color: #111;
       background: #fff;
-      box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.06),
-        0 1px 2px 0 rgba(0, 0, 0, 0.04),
-        0 4px 12px 0 rgba(0, 0, 0, 0.03);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
       font-family:
         Inter, Roboto, "Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial,
         sans-serif;
@@ -74,8 +73,8 @@ template.innerHTML = html`
     button, :host([status]) #status {
       position: relative;
       box-sizing: border-box;
-      min-height: 48px;
-      padding: 16px 16px 12px 52px;
+      min-height: 46px;
+      padding: 16px 16px 10px 52px;
       border-radius: 6px;
     }
 
@@ -94,7 +93,7 @@ template.innerHTML = html`
       top: 50%;
       width: 24px;
       height: 24px;
-      margin-top: -11px;
+      margin-top: -10px;
       border: 1px solid #bbb;
       border-radius: 6px;
     }
