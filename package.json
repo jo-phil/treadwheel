@@ -2,8 +2,6 @@
   "name": "treadwheel",
   "version": "0.1.0",
   "description": "Time-release encryption for automated extraction deterrence",
-  "author": "Johann Philipp Gorzny <jo-phil@gorzny.de>",
-  "license": "Apache-2.0",
   "keywords": [
     "anti-automation",
     "anti-scraping",
@@ -14,24 +12,19 @@
     "time-release-cryptography"
   ],
   "homepage": "https://github.com/jo-phil/treadwheel",
+  "bugs": {
+    "url": "https://github.com/jo-phil/treadwheel/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jo-phil/treadwheel.git"
   },
-  "bugs": {
-    "url": "https://github.com/jo-phil/treadwheel/issues"
-  },
-  "type": "module",
-  "files": [
-    "dist"
-  ],
-  "main": "./dist/node/index.js",
-  "browser": "./dist/browser/index.js",
-  "types": "./dist/node/index.d.ts",
-  "bin": "./dist/node/cli.js",
+  "license": "Apache-2.0",
+  "author": "Johann Philipp Gorzny <jo-phil@gorzny.de>",
   "sideEffects": [
     "./dist/browser/widget.js"
   ],
+  "type": "module",
   "exports": {
     ".": {
       "node": {
@@ -49,6 +42,25 @@
     },
     "./widget": "./dist/browser/widget.js"
   },
+  "main": "./dist/node/index.js",
+  "browser": "./dist/browser/index.js",
+  "types": "./dist/node/index.d.ts",
+  "bin": "./dist/node/cli.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm clean && tsc && tsdown",
+    "check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "format": "biome format --write",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:dev": "vitest unit",
+    "validate": "pnpm check && pnpm lint && pnpm test"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.5.6",
     "@lit-labs/rollup-plugin-minify-html-literals": "^0.2.0",
@@ -64,18 +76,6 @@
     "tsx": "^4.20.5",
     "typescript": "^5.5.3",
     "vitest": "^5.0.3"
-  },
-  "scripts": {
-    "clean": "rimraf dist",
-    "build": "pnpm clean && tsc && tsdown",
-    "check": "tsc --noEmit",
-    "lint": "biome check",
-    "lint:fix": "biome check --write",
-    "format": "biome format --write",
-    "test": "vitest run",
-    "test:cov": "vitest run --coverage",
-    "test:dev": "vitest unit",
-    "validate": "pnpm check && pnpm lint && pnpm test"
   },
   "packageManager": "pnpm@12.9.1",
   "engines": {
