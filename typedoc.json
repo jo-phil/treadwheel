@@ -7,6 +7,7 @@
   "disableSources": true,
   "readme": "none",
   "out": "./docs",
+  "cleanOutputDir": false,
 
   "router": "module",
   "name": "API Reference",
