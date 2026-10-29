@@ -28,9 +28,8 @@ export function mint(
   q: bigint,
   { time, modulusLength }: PuzzleParams,
 ): { puzzle: Puzzle; solution: bigint } {
-  if (!Number.isSafeInteger(time) || time < 0) {
-    throw new RangeError('time must be a non-negative safe integer');
-  }
+  if (!Number.isSafeInteger(time) || time < 0)
+    throw new RangeError("Option 'time' must be a non-negative safe integer");
 
   const t = BigInt(time);
   const modulusByteLength = Math.ceil(modulusLength / 8);

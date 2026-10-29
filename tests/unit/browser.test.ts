@@ -23,7 +23,7 @@ describe('browser', () => {
 
   it('propagates error in web worker', async () => {
     await expect(unsealInWorker('invalid-envelope')).rejects.toThrow(
-      'invalid magic bytes',
+      'magic bytes mismatch',
     );
   });
 

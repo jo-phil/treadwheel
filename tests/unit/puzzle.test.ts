@@ -20,7 +20,7 @@ describe('puzzle', () => {
 
   it('rejects negative time values', () => {
     expect(() => mint(p, q, { time: -1, modulusLength: 2048 })).toThrow(
-      'time must be a non-negative safe integer',
+      "Option 'time' must be a non-negative safe integer",
     );
   });
 });

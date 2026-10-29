@@ -18,13 +18,13 @@ describe('io', () => {
 
   it('rejects binary envelope with invalid magic bytes', () => {
     expect(() => bytesToEnvelope(bytes.subarray(1))).toThrow(
-      'invalid magic bytes',
+      'magic bytes mismatch',
     );
   });
 
   it('rejects incomplete binary envelope', () => {
     expect(() => bytesToEnvelope(bytes.subarray(0, -1))).toThrow(
-      'not enough bytes to read',
+      'unexpected end of data',
     );
   });
 });
