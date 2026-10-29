@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/typedoc-plugin-markdown/typedoc-plugin-markdown.schema.json",
+  "plugin": ["typedoc-plugin-markdown"],
+
+  "entryPoints": ["src/browser/index.ts"],
+  "entryPointStrategy": "expand",
+  "disableSources": true,
+  "readme": "none",
+  "out": "./docs",
+
+  "router": "module",
+  "name": "API Reference",
+  "entryFileName": "api.md",
+  "hidePageHeader": true,
+  "hideGroupHeadings": true,
+  "parametersFormat": "table",
+  "interfacePropertiesFormat": "table"
+}

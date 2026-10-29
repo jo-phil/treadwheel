@@ -29,6 +29,10 @@ npm i treadwheel
 
 ## Usage
 
+This section explains how to seal plaintext using the CLI and integrate a widget
+to unseal it in a web application. For programmatic usage, see the
+[API Reference](docs/api.md).
+
 ### 1. Sealing plaintext
 
 Use the `treadwheel seal` command to seal plaintext:
@@ -54,7 +58,7 @@ module:
 import 'treadwheel/widget';
 ```
 
-Alternatively, load it from a CDN with a script tag:
+Alternatively, load it from a CDN with a script tag, e.g.:
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/treadwheel@latest/dist/treadwheel-widget.min.js"></script>
