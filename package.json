@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "Time-release encryption for automated extraction deterrence",
   "keywords": [
-    "anti-automation",
     "anti-scraping",
-    "computational-puzzle",
+    "bot-protection",
     "obfuscation",
     "proof-of-work",
+    "spam-prevention",
     "time-lock-puzzle",
     "time-release-cryptography"
   ],
