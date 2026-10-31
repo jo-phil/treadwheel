@@ -1,5 +1,9 @@
 # Treadwheel
 
+[![NPM Version](https://img.shields.io/npm/v/treadwheel)](https://www.npmjs.com/package/treadwheel)
+[![CI](https://github.com/jo-phil/treadwheel/actions/workflows/ci.yml/badge.svg)](https://github.com/jo-phil/treadwheel/actions/workflows/ci.yml)
+[![Docs](https://github.com/jo-phil/treadwheel/actions/workflows/docs.yml/badge.svg)](https://jo-phil.github.io/treadwheel)
+
 Treadwheel uses time-lock puzzles based on
 [Rivest, Shamir, and Wagner (1996)](https://people.csail.mit.edu/rivest/pubs/RSW96.pdf)
 to protect information from bots while keeping access simple for humans.
@@ -30,8 +34,8 @@ npm i treadwheel
 ## Usage
 
 This section explains how to seal plaintext using the CLI and integrate a widget
-to unseal it in a web application. For programmatic usage, see the
-[API Reference](docs/api.md).
+to unseal it in a web application. For advanced configuration and full API
+details, see the [Documentation](https://jo-phil.github.io/treadwheel).
 
 ### 1. Sealing plaintext
 
@@ -42,23 +46,22 @@ npx treadwheel seal "Hello, World!"
 ```
 
 This outputs a Base64URL-encoded envelope containing the time-lock puzzle and
-encrypted payload.
+encrypted payload, which can be used for the `envelope` attribute of the widget.
 
-The puzzle's difficulty can be adjusted using the `--time` and
-`--modulus-length` options. The `--time` option specifies the number of
-sequential squarings required to solve the puzzle, while `--modulus-length`
-specifies the desired bit length of its modulus.
+> [!TIP]
+> The puzzle's difficulty can be adjusted with the `--time` option. See the
+> [CLI Reference](https://jo-phil.github.io/treadwheel/cli) for details.
 
 ### 2. Importing the widget
 
-To use the widget in a client-side application, import the `treadwheel/widget`
-module:
+To allow visitors to unseal the envelope on your website, register the
+`<treadwheel-widget>` element by importing the `treadwheel/widget` module:
 
 ```javascript
 import 'treadwheel/widget';
 ```
 
-Alternatively, load it from a CDN with a script tag, e.g.:
+Alternatively, use a script tag to load it from a CDN:
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/treadwheel@latest/dist/treadwheel-widget.min.js"></script>
@@ -70,21 +73,6 @@ Add a `<treadwheel-widget>` element with the envelope to your HTML document:
 
 ```html
 <treadwheel-widget envelope="tw__..."></treadwheel-widget>
-```
-
-If the plaintext contains HTML, set `output="html"` (only for envelopes from a
-trusted source):
-
-```html
-<treadwheel-widget output="html" envelope="tw__..."></treadwheel-widget>
-```
-
-To display the widget in a floating layout, include a button inside the element:
-
-```html
-<treadwheel-widget envelope="tw__...">
-  <button type="button">Click to reveal</button>
-</treadwheel-widget>
 ```
 
 ## License
