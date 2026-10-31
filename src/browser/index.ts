@@ -48,6 +48,9 @@ export async function seal(
  * @returns The decrypted plaintext.
  */
 export async function unseal(envelope: string): Promise<string> {
+  if (!globalThis.crypto?.subtle)
+    throw new Error('Web Crypto API is not available');
+
   return await unsealFromBytes(base64UrlToBytes(envelope));
 }
 

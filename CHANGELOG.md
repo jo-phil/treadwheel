@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Unnecessary computation in insecure browser contexts. The `unseal` function
+  (and consequently `unsealInWorker`) now fails fast when the Web Crypto API is
+  not available to avoid solving time-lock puzzles for payloads that cannot be
+  decrypted.
+
 ## [1.0.0] - 2026-10-29
 
 *Initial release.*
