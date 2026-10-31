@@ -2,7 +2,7 @@
 
 [![NPM Version](https://img.shields.io/npm/v/treadwheel)](https://www.npmjs.com/package/treadwheel)
 [![CI](https://github.com/jo-phil/treadwheel/actions/workflows/ci.yml/badge.svg)](https://github.com/jo-phil/treadwheel/actions/workflows/ci.yml)
-[![Docs](https://github.com/jo-phil/treadwheel/actions/workflows/docs.yml/badge.svg)](https://jo-phil.github.io/treadwheel)
+[![Docs](https://github.com/jo-phil/treadwheel/actions/workflows/docs.yml/badge.svg)](https://jo-phil.github.io/treadwheel/)
 
 Treadwheel uses time-lock puzzles based on
 [Rivest, Shamir, and Wagner (1996)](https://people.csail.mit.edu/rivest/pubs/RSW96.pdf)
@@ -35,7 +35,7 @@ npm i treadwheel
 
 This section explains how to seal plaintext using the CLI and integrate a widget
 to unseal it in a web application. For advanced configuration and full API
-details, see the [Documentation](https://jo-phil.github.io/treadwheel).
+details, see the [Documentation](https://jo-phil.github.io/treadwheel/).
 
 ### 1. Sealing plaintext
 
