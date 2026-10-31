@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-31
+
 ### Fixed
 
 - Unnecessary computation in insecure browser contexts. The `unseal` function
@@ -18,5 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *Initial release.*
 
-[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.1
 [1.0.0]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.0
