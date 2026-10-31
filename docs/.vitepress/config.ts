@@ -3,6 +3,7 @@ import { defineConfig } from 'vitepress';
 import pkg from '../../package.json' with { type: 'json' };
 
 export default defineConfig({
+  base: '/treadwheel/',
   title: 'Treadwheel',
   description:
     'Use time-lock puzzles to protect sensitive information from bots ' +
