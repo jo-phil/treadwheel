@@ -1,5 +1,6 @@
 import minifyHTML from '@lit-labs/rollup-plugin-minify-html-literals';
 import { defineConfig } from 'vitepress';
+import pkg from '../../package.json' with { type: 'json' };
 
 export default defineConfig({
   title: 'Treadwheel',
@@ -8,6 +9,17 @@ export default defineConfig({
     'while keeping access simple for humans.',
   cleanUrls: true,
   themeConfig: {
+    nav: [
+      {
+        text: pkg.version,
+        items: [
+          {
+            text: 'Releases',
+            link: 'https://github.com/jo-phil/treadwheel/releases',
+          },
+        ],
+      },
+    ],
     sidebar: [
       { text: 'Quickstart', link: '/guide' },
       { text: 'CLI', link: '/cli' },
@@ -17,6 +29,7 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/jo-phil/treadwheel' },
     ],
+    externalLinkIcon: true,
   },
   vite: {
     plugins: [minifyHTML()],

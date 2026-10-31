@@ -1,7 +1,3 @@
-a[rel*="noreferrer"]::after {
-  content: "\2009↗";
-}
-
 .vp-doc._api hr {
   display: none;
 }

@@ -24,6 +24,7 @@ features:
     details: >-
       Protect information with computational puzzles based on
       <a
+        class="vp-external-link-icon"
         href="https://people.csail.mit.edu/rivest/pubs/RSW96.pdf"
         target="_blank"
         rel="noopener noreferrer"
