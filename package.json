@@ -60,8 +60,8 @@
     "test:cov": "vitest run --coverage",
     "test:dev": "vitest unit",
     "validate": "pnpm check && pnpm lint && pnpm test",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:dev": "typedoc --watch & vitepress dev docs",
+    "docs:build": "typedoc && vitepress build docs",
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
