@@ -39,7 +39,7 @@ features:
   - icon: 🧩
     title: Multiple ways to integrate
     details: >-
-      Use the <a href="/cli">command-line interface</a>,
-      <a href="/widget">Web&nbsp;Component</a>, or
-      <a href="/api">JavaScript&nbsp;API</a>.
+      Use the <a href="./cli">command-line interface</a>,
+      <a href="./widget">Web&nbsp;Component</a>, or
+      <a href="./api">JavaScript&nbsp;API</a>.
 ---
