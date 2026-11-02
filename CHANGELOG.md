@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Sourcemaps pointing to missing source files in the npm release. To avoid
+  downstream warnings while keeping the installation size small, sourcemaps are
+  now omitted from the unbundled build.
+
 ## [1.0.1] - 2026-10-31
 
 ### Fixed
