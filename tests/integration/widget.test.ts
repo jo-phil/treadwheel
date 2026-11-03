@@ -16,7 +16,7 @@ describe('widget', () => {
     document.body.replaceChildren();
   });
 
-  it('unseals envelope and goes away', async () => {
+  it('unseals envelope', async () => {
     widget.setAttribute('envelope', fixture.envelope);
     document.body.appendChild(widget);
 
@@ -24,11 +24,10 @@ describe('widget', () => {
     expect(page.getByRole('status')).toHaveTextContent('Verifying…');
 
     await expect.element(document.body).toHaveTextContent(fixture.plaintext);
-    expect(widget).not.toBeInTheDocument();
   });
 
   it.skipIf(server.browser === 'webkit')(
-    'unseals envelope in floating layout and fades out',
+    'unseals envelope in floating layout',
     async () => {
       const slottedButton = document.createElement('button');
       slottedButton.textContent = 'Click to reveal';
@@ -52,7 +51,7 @@ describe('widget', () => {
       await expect.element(status).toHaveTextContent('Verified');
       await expect.element(document.body).toHaveTextContent(fixture.plaintext);
 
-      await expect.element(widget).not.toBeInTheDocument();
+      await expect.element(article).not.toBeInTheDocument();
     },
   );
 
@@ -103,6 +102,5 @@ describe('widget', () => {
     expect(status).toHaveTextContent('Verifying…');
 
     await expect.element(document.body).toHaveTextContent(fixture.plaintext);
-    expect(widget).not.toBeInTheDocument();
   });
 });

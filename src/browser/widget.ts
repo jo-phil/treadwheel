@@ -163,7 +163,6 @@ template.innerHTML = html`
       </footer>
     </article>
   </div>
-  <slot name="_output"></slot>
 `;
 
 class TreadwheelWidget extends HTMLElement {
@@ -203,16 +202,19 @@ class TreadwheelWidget extends HTMLElement {
     if (!envelope) return;
 
     this.setAttribute('status', 'processing');
-    const status = this._shadow.getElementById('status');
-    if (status) status.textContent = 'Verifying…';
     this.querySelectorAll('button').forEach((button) => {
       button.disabled = true;
     });
+
+    const status = this._shadow.getElementById('status');
+    if (status) status.textContent = 'Verifying…';
 
     try {
       const plaintext = await unsealInWorker(envelope, {
         signal: this._abortController?.signal,
       });
+
+      this._shadow.removeEventListener('click', this._handleClick);
       this.setAttribute('status', 'success');
       if (status) status.textContent = 'Verified';
 
@@ -224,14 +226,24 @@ class TreadwheelWidget extends HTMLElement {
       else output.textContent = plaintext;
       this.append(output);
 
+      const style = document.createElement('style');
+      style.textContent = ':host{display:contents}';
+
+      const slot = document.createElement('slot');
+      slot.name = '_output';
+
+      const purge = () => {
+        this._shadow.replaceChildren(style, slot);
+        this.childNodes.forEach((node) => {
+          if (node !== output) node.remove();
+        });
+      };
+
       if (this.getAttribute('layout') === 'floating') {
-        this._shadow.addEventListener(
-          'transitionend',
-          () => this.replaceWith(...output.childNodes),
-          { once: true },
-        );
+        this._shadow.append(slot);
+        this._shadow.addEventListener('transitionend', purge, { once: true });
       } else {
-        this.replaceWith(...output.childNodes);
+        purge();
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {
