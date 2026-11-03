@@ -5,6 +5,10 @@ const html = String.raw;
 const template = document.createElement('template');
 template.innerHTML = html`
   <style>
+    :host, #base {
+      display: contents;
+    }
+
     article {
       all: initial;
       display: block;
@@ -23,7 +27,7 @@ template.innerHTML = html`
       user-select: none;
     }
 
-    :host([layout="floating"]) {
+    :host([layout="floating"]) #base {
       display: inline-block;
       position: relative;
     }
@@ -46,15 +50,23 @@ template.innerHTML = html`
       transition: opacity .1s ease-out;
     }
 
+    :host([layout="floating"][status="success"]) #base {
+      position: absolute;
+    }
+
+    :host([layout="floating"][status="success"]) #trigger {
+      visibility: hidden;
+    }
+
     @supports (position-area: block-end span-inline-end) {
-      :host([layout="floating"]) {
+      :host([layout="floating"]) #base {
         position: static;
-        anchor-name: --host;
+        anchor-name: --base;
       }
 
       :host([layout="floating"]) article {
         position: fixed;
-        position-anchor: --host;
+        position-anchor: --base;
         position-area: block-end span-inline-end;
         position-try-fallbacks: flip-inline;
       }
@@ -134,21 +146,24 @@ template.innerHTML = html`
 
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
-  <slot></slot>
-  <article>
-    <button type="button">I'm not a robot</button>
-    <div id="status" role="status"></div>
-    <footer>
-      Protected by
-      <a
-        href="https://github.com/jo-phil/treadwheel"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Treadwheel
-      </a>
-    </footer>
-  </article>
+  <div id="base">
+    <slot id="trigger"></slot>
+    <article>
+      <button type="button">I'm not a robot</button>
+      <div id="status" role="status"></div>
+      <footer>
+        Protected by
+        <a
+          href="https://github.com/jo-phil/treadwheel"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Treadwheel
+        </a>
+      </footer>
+    </article>
+  </div>
+  <slot name="_output"></slot>
 `;
 
 class TreadwheelWidget extends HTMLElement {
@@ -201,22 +216,22 @@ class TreadwheelWidget extends HTMLElement {
       this.setAttribute('status', 'success');
       if (status) status.textContent = 'Verified';
 
-      const output = document.createElement('template');
-      if (this.getAttribute('output') === 'html') {
-        output.innerHTML = plaintext;
-      } else {
-        output.content.textContent = plaintext;
-      }
+      const output = document.createElement('div');
+      output.slot = '_output';
+      output.style.display = 'contents';
+
+      if (this.getAttribute('output') === 'html') output.innerHTML = plaintext;
+      else output.textContent = plaintext;
+      this.append(output);
 
       if (this.getAttribute('layout') === 'floating') {
-        this.replaceChildren(output.content);
         this._shadow.addEventListener(
           'transitionend',
-          () => this.replaceWith(...this.childNodes),
+          () => this.replaceWith(...output.childNodes),
           { once: true },
         );
       } else {
-        this.replaceWith(output.content);
+        this.replaceWith(...output.childNodes);
       }
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') {

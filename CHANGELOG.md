@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Unwanted layout shifts affecting floating widgets and their outputs.
+- Unintuitive focus order during the fadeout of floating widgets.
+
 ## [1.0.2] - 2026-11-02
 
 ### Fixed

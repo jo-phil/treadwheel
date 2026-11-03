@@ -49,8 +49,8 @@ describe('widget', () => {
       const status = page.getByRole('status');
       expect(status).toHaveTextContent('Verifying…');
 
+      await expect.element(status).toHaveTextContent('Verified');
       await expect.element(document.body).toHaveTextContent(fixture.plaintext);
-      expect(status).toHaveTextContent('Verified');
 
       await expect.element(widget).not.toBeInTheDocument();
     },
