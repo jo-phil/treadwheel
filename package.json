@@ -1,6 +1,6 @@
 {
   "name": "treadwheel",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Time-release encryption to protect sensitive information from bots",
   "keywords": [
     "anti-scraping",
