@@ -149,7 +149,7 @@ template.innerHTML = html`
   </style>
   <div id="base">
     <slot id="trigger"></slot>
-    <article>
+    <article lang="en">
       <button type="button">I'm not a robot</button>
       <div id="status" role="status"></div>
       <footer>
@@ -158,6 +158,7 @@ template.innerHTML = html`
           href="https://github.com/jo-phil/treadwheel"
           target="_blank"
           rel="noopener noreferrer"
+          translate="no"
         >
           Treadwheel
         </a>
