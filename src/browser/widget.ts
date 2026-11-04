@@ -52,6 +52,7 @@ template.innerHTML = html`
 
     :host([layout="floating"][status="success"]) #base {
       position: absolute;
+      pointer-events: none;
     }
 
     :host([layout="floating"][status="success"]) #trigger {
