@@ -14,10 +14,7 @@ function randomBigInt(strictUpperBound: bigint, byteLength: number): bigint {
   // Oversample by 16 bytes to reduce modulo bias
   const randomBytes = new Uint8Array(byteLength + 16);
   globalThis.crypto.getRandomValues(randomBytes);
-
-  let x = bytesToBigInt(randomBytes) % strictUpperBound;
-  if (x <= 1n) x = 2n;
-  return x;
+  return bytesToBigInt(randomBytes) % strictUpperBound;
 }
 
 export function mint(
