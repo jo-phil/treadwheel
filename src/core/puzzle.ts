@@ -30,7 +30,7 @@ export function mint(
 
   const modulus = p * q;
   const phi = (p - 1n) * (q - 1n);
-  const base = randomBigInt(modulus, modulusByteLength);
+  const base = randomBigInt(modulus - 2n, modulusByteLength) + 2n;
   const exponent = modExp(2n, t, phi);
   const solution = modExp(base, exponent, modulus);
 
