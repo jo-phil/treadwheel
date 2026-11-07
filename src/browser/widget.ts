@@ -241,9 +241,10 @@ class TreadwheelWidget extends HTMLElement {
         });
       };
 
-      if (this.getAttribute('layout') === 'floating') {
+      const widget = this._shadow.getElementById('widget');
+      if (widget && this.getAttribute('layout') === 'floating') {
         this._shadow.append(slot);
-        this._shadow.addEventListener('transitionend', purge, { once: true });
+        widget.addEventListener('transitionend', purge, { once: true });
       } else {
         purge();
       }

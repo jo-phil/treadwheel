@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Abrupt disappearance of floating widgets triggered by output transitions.
+
 ## [1.0.4] - 2026-11-06
 
 ### Security
