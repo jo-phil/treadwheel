@@ -9,7 +9,7 @@ template.innerHTML = html`
       display: contents;
     }
 
-    article {
+    #widget {
       all: initial;
       display: block;
       box-sizing: border-box;
@@ -32,7 +32,7 @@ template.innerHTML = html`
       position: relative;
     }
 
-    :host([layout="floating"]) article {
+    :host([layout="floating"]) #widget {
       display: none;
       position: absolute;
       z-index: 1000000;
@@ -40,12 +40,12 @@ template.innerHTML = html`
       transition: opacity .2s ease-in .8s;
     }
 
-    :host([layout="floating"][status]) article {
+    :host([layout="floating"][status]) #widget {
       display: block;
     }
 
-    :host([layout="floating"][status="processing"]) article,
-    :host([layout="floating"][status="error"]) article {
+    :host([layout="floating"][status="processing"]) #widget,
+    :host([layout="floating"][status="error"]) #widget {
       opacity: 1;
       transition: opacity .1s ease-out;
     }
@@ -65,7 +65,7 @@ template.innerHTML = html`
         anchor-name: --base;
       }
 
-      :host([layout="floating"]) article {
+      :host([layout="floating"]) #widget {
         position: fixed;
         position-anchor: --base;
         position-area: block-end span-inline-end;
@@ -149,7 +149,7 @@ template.innerHTML = html`
   </style>
   <div id="base">
     <slot id="trigger"></slot>
-    <article lang="en">
+    <article id="widget" lang="en">
       <button type="button">I'm not a robot</button>
       <div id="status" role="status"></div>
       <footer>

@@ -36,14 +36,12 @@ describe('widget', () => {
       widget.setAttribute('envelope', fixture.envelope);
       document.body.appendChild(widget);
 
-      const article = widget.shadowRoot?.querySelector(
-        'article',
-      ) as HTMLElement;
-      await expect.element(article).not.toBeVisible();
+      const view = widget.shadowRoot?.getElementById('widget') as HTMLElement;
+      await expect.element(view).not.toBeVisible();
 
       const button = page.getByRole('button', { name: 'Click to reveal' });
       await button.click();
-      expect(article).toBeVisible();
+      expect(view).toBeVisible();
 
       const status = page.getByRole('status');
       expect(status).toHaveTextContent('Verifying…');
@@ -51,7 +49,7 @@ describe('widget', () => {
       await expect.element(status).toHaveTextContent('Verified');
       await expect.element(document.body).toHaveTextContent(fixture.plaintext);
 
-      await expect.element(article).not.toBeInTheDocument();
+      await expect.element(view).not.toBeInTheDocument();
     },
   );
 
