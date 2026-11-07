@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-11-07
+
 ### Fixed
 
 - Widget overflow in constrained layouts and full-width breakout in old browsers.
@@ -49,7 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *Initial release.*
 
-[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.0.4...HEAD
+[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.0.5...HEAD
+[1.0.5]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.5
 [1.0.4]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.4
 [1.0.3]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.3
 [1.0.2]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.2
