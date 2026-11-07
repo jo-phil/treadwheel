@@ -177,7 +177,7 @@ class TreadwheelWidget extends HTMLElement {
 
     this._shadow.appendChild(template.content.cloneNode(true));
     this._shadow.addEventListener('click', this._handleClick);
-    this._shadow.querySelector('slot')?.addEventListener(
+    this._shadow.getElementById('trigger')?.addEventListener(
       'slotchange',
       () => {
         if (this.hasAttribute('layout')) return;
