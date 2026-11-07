@@ -13,7 +13,8 @@ template.innerHTML = html`
       all: initial;
       display: block;
       box-sizing: border-box;
-      width: min(300px, 100dvw);
+      width: 300px;
+      max-width: 100%;
       border: 1px solid rgba(0, 0, 0, 0.12);
       border-radius: 10px;
       color: #111;
