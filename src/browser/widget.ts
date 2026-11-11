@@ -25,6 +25,7 @@ template.innerHTML = html`
         sans-serif;
       font-size: 16px;
       line-height: 1.25;
+      -webkit-user-select: none;
       user-select: none;
     }
 
