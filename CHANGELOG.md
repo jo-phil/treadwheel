@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Incomplete widget cleanup when removing multiple child nodes.
 - Unwanted selectability of widget text in WebKit browsers.
 
 ## [1.0.5] - 2026-11-07

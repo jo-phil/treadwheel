@@ -238,7 +238,7 @@ class TreadwheelWidget extends HTMLElement {
 
       const purge = () => {
         this._shadow.replaceChildren(style, slot);
-        this.childNodes.forEach((node) => {
+        [...this.childNodes].forEach((node) => {
           if (node !== output) node.remove();
         });
       };
