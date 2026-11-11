@@ -81,20 +81,27 @@ describe('widget', () => {
   });
 
   it('aborts when detached and reactivates on reattachment', async () => {
+    const slottedButton = document.createElement('button');
+    slottedButton.textContent = 'Click to reveal';
+    widget.appendChild(slottedButton);
+
     const envelope = await seal(fixture.plaintext, { time: 1000 });
     widget.setAttribute('envelope', envelope);
     document.body.appendChild(widget);
 
-    const button = page.getByRole('button', { name: "I'm not a robot" });
+    const button = page.getByRole('button', { name: "Click to reveal" });
     await button.click();
-    const status = page.getByRole('status');
+
+    expect(button).toBeDisabled();
+    const status = widget.shadowRoot?.getElementById('status') as HTMLElement;
     expect(status).toHaveTextContent('Verifying…');
 
     widget.remove();
     await expect.element(widget).not.toHaveAttribute('status');
+    await expect.element(status).toBeEmptyDOMElement();
 
     document.body.appendChild(widget);
-    await expect.element(status).toBeEmptyDOMElement();
+    expect(button).toBeEnabled();
 
     await button.click();
     expect(status).toHaveTextContent('Verifying…');
