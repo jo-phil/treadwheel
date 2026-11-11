@@ -89,7 +89,7 @@ describe('widget', () => {
     widget.setAttribute('envelope', envelope);
     document.body.appendChild(widget);
 
-    const button = page.getByRole('button', { name: "Click to reveal" });
+    const button = page.getByRole('button', { name: 'Click to reveal' });
     await button.click();
 
     expect(button).toBeDisabled();
