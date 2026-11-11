@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-11-11
+
 ### Fixed
 
 - Incomplete widget cleanup when removing multiple child nodes.
@@ -61,7 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *Initial release.*
 
-[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.0.5...HEAD
+[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.0.6...HEAD
+[1.0.6]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.6
 [1.0.5]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.5
 [1.0.4]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.4
 [1.0.3]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.3
