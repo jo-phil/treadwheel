@@ -23,9 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- Patched time-lock puzzle construction to match the original RSW formulation by
-  eliminating the possibility of creating trivial puzzles with a base of 0 or 1
-  (though this was highly unlikely for any secure modulus length).
+- Aligned time-lock puzzle construction with the original RSW formulation by
+  eliminating the possibility of creating trivial puzzles with a base of 0 or 1.
 
 ## [1.0.3] - 2026-11-04
 
