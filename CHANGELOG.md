@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incomplete widget cleanup when removing multiple child nodes.
 - Unwanted selectability of widget text in WebKit browsers.
 
+### Security
+
+- Hardened prime generation in Node.js by extracting primes from RSA key pairs
+  instead of generating them independently, eliminating the possibility of close
+  primes and protecting against Fermat factorization.
+
 ## [1.0.5] - 2026-11-07
 
 ### Fixed

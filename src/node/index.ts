@@ -3,18 +3,32 @@ import { Worker } from 'node:worker_threads';
 
 import { SEAL_DEFAULTS } from '../core/defaults.js';
 import { sealFromPrimes, unsealFromBytes } from '../core/index.js';
+import { bytesToBigInt } from '../core/io.js';
 import type { SealOptions, UnsealInWorkerOptions } from '../core/types.js';
 
 export type { SealOptions, UnsealInWorkerOptions };
 
-function generatePrimeAsync(size: number): Promise<bigint> {
+function generatePrimesAsync(
+  modulusLength: number,
+): Promise<{ p: bigint; q: bigint }> {
   return new Promise((resolve, reject) => {
-    const callback = (err: Error | null, prime: bigint) => {
-      if (err) reject(err);
-      else resolve(prime);
+    const callback = (
+      err: Error | null,
+      _publicKey: crypto.KeyObject,
+      privateKey: crypto.KeyObject,
+    ) => {
+      if (err) return reject(err);
+
+      const jwk = privateKey.export({ format: 'jwk' });
+      if (!jwk.p || !jwk.q)
+        return reject(new Error('RSA JWK is missing primes p or q'));
+
+      const p = bytesToBigInt(Buffer.from(jwk.p, 'base64url'));
+      const q = bytesToBigInt(Buffer.from(jwk.q, 'base64url'));
+      resolve({ p, q });
     };
 
-    crypto.generatePrime(size, { bigint: true }, callback);
+    crypto.generateKeyPair('rsa', { modulusLength }, callback);
   });
 }
 
@@ -31,12 +45,7 @@ export async function seal(
 ): Promise<string> {
   const config = { ...SEAL_DEFAULTS, ...options };
 
-  const pLength = Math.ceil(config.modulusLength / 2);
-  const qLength = config.modulusLength - pLength;
-  const [p, q] = await Promise.all([
-    generatePrimeAsync(pLength),
-    generatePrimeAsync(qLength),
-  ]);
+  const { p, q } = await generatePrimesAsync(config.modulusLength);
 
   const envelope = await sealFromPrimes(plaintext, p, q, config);
   return Buffer.from(envelope).toString('base64url');
