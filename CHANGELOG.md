@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-17
+
 ### Added
 
 - Dark mode support based on the computed `color-scheme` property of the widget.
@@ -67,7 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *Initial release.*
 
-[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.0.6...HEAD
+[Unreleased]: https://github.com/jo-phil/treadwheel/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/jo-phil/treadwheel/releases/tag/1.1.0
 [1.0.6]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.6
 [1.0.5]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.5
 [1.0.4]: https://github.com/jo-phil/treadwheel/releases/tag/1.0.4
