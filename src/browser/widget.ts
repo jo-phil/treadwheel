@@ -15,16 +15,25 @@ template.innerHTML = html`
       box-sizing: border-box;
       width: 300px;
       max-width: 100%;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      border-radius: 10px;
+
+      color-scheme: inherit;
       color: #111;
+      color: light-dark(#111, #eee);
       background: #fff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      background: light-dark(#fff, #111);
+
+      border: 1px solid #0002;
+      border-color: light-dark(#0002, #fff3);
+      border-radius: 10px;
+      box-shadow: 0 1px 2px #0001;
+      box-shadow: 0 1px 2px light-dark(#0001, #0006);
+
+      font-size: 16px;
+      line-height: 1.25;
       font-family:
         Inter, Roboto, "Helvetica Neue", "Arial Nova", "Nimbus Sans", Arial,
         sans-serif;
-      font-size: 16px;
-      line-height: 1.25;
+
       -webkit-user-select: none;
       user-select: none;
     }
@@ -109,25 +118,27 @@ template.innerHTML = html`
       width: 24px;
       height: 24px;
       margin-top: -10px;
-      border: 1px solid #bbb;
+
+      border: 1px solid #aaa;
+      border-color: light-dark(#aaa, #777);
       border-radius: 6px;
     }
 
     :host([status="processing"]) #status::before {
       border-radius: 50%;
-      border-color: transparent transparent #111 #111;
+      border-color: currentColor currentColor transparent transparent;
       animation: spin 1s linear infinite;
     }
 
     :host([status="success"]) #status::before {
-      border-color: #16a34a;
-      background-color: #16a34a;
+      border-color: #285;
+      background-color: #285;
       background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0ibTE4IDgtOCA5LTQtNCIvPjwvc3ZnPg==");
     }
 
     :host([status="error"]) #status::before {
-      border-color: #dc2626;
-      background-color: #dc2626;
+      border-color: #d34;
+      background-color: #d34;
       background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCI+PHBhdGggZD0iTTE3IDcgNyAxN003IDdsMTAgMTAiLz48L3N2Zz4=");
     }
 
@@ -135,6 +146,7 @@ template.innerHTML = html`
       text-align: right;
       font-size: 12px;
       color: #666;
+      color: light-dark(#666, #999);
       padding: 2px 9px 7px 9px;
     }
 
