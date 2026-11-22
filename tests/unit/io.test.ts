@@ -22,6 +22,18 @@ describe('io', () => {
     );
   });
 
+  it('rejects binary envelope with unsupported version', () => {
+    const envelope = bytesToEnvelope(bytes);
+    const bytesUnsupportedVersion = envelopeToBytes({
+      ...envelope,
+      // @ts-expect-error
+      v: envelope.v + 1,
+    });
+    expect(() => bytesToEnvelope(bytesUnsupportedVersion)).toThrow(
+      'Unsupported envelope version',
+    );
+  });
+
   it('rejects incomplete binary envelope', () => {
     expect(() => bytesToEnvelope(bytes.subarray(0, -1))).toThrow(
       'unexpected end of data',
