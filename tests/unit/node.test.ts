@@ -2,7 +2,8 @@ import type { WorkerOptions } from 'node:worker_threads';
 import { describe, expect, it, vi } from 'vitest';
 
 import { seal, unseal, unsealInWorker } from '../../src/node/index.js';
-import fixture from '../fixtures/v1.json' with { type: 'json' };
+
+import { fixture, v1, v2 } from '../fixtures';
 
 vi.mock('node:worker_threads', async (importOriginal) => {
   const original = await importOriginal<typeof import('node:worker_threads')>();
@@ -29,12 +30,12 @@ describe('node', () => {
     expect(plaintext).toBe(fixture.plaintext);
   });
 
-  it('unseals golden envelope', async () => {
+  it.for([v1, v2])('unseals v$v envelope', async (fixture) => {
     const plaintext = await unseal(fixture.envelope);
     expect(plaintext).toBe(fixture.plaintext);
   });
 
-  it('unseals golden envelope in a worker thread', async () => {
+  it.for([v1, v2])('unseals v$v envelope in worker thread', async (fixture) => {
     const plaintext = await unsealInWorker(fixture.envelope);
     expect(plaintext).toBe(fixture.plaintext);
   });

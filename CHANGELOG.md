@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** Time-lock puzzle construction now uses a base of 2, reducing
+  envelope size and ensuring the GCD of the base and modulus is 1. New envelopes
+  cannot be unsealed in v1, though v1 envelopes remain compatible with v2.
+
 ## [1.1.0] - 2026-11-17
 
 ### Added

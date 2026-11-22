@@ -1,4 +1,3 @@
-import { bytesToBigInt } from './io.js';
 import type { Puzzle, PuzzleParams } from './types.js';
 
 function modExp(base: bigint, exponent: bigint, modulus: bigint): bigint {
@@ -8,13 +7,6 @@ function modExp(base: bigint, exponent: bigint, modulus: bigint): bigint {
     base = (base * base) % modulus;
   }
   return result;
-}
-
-function randomBigInt(strictUpperBound: bigint, byteLength: number): bigint {
-  // Oversample by 16 bytes to reduce modulo bias
-  const randomBytes = new Uint8Array(byteLength + 16);
-  globalThis.crypto.getRandomValues(randomBytes);
-  return bytesToBigInt(randomBytes) % strictUpperBound;
 }
 
 export function mint(
@@ -27,14 +19,18 @@ export function mint(
 
   const t = BigInt(time);
   const modulusByteLength = Math.ceil(modulusLength / 8);
+  const baseByteLength = 1;
 
   const modulus = p * q;
   const phi = (p - 1n) * (q - 1n);
-  const base = randomBigInt(modulus - 2n, modulusByteLength) + 2n;
+  const base = 2n;
   const exponent = modExp(2n, t, phi);
   const solution = modExp(base, exponent, modulus);
 
-  return { puzzle: { modulusByteLength, modulus, base, time: t }, solution };
+  return {
+    puzzle: { modulusByteLength, baseByteLength, modulus, base, time: t },
+    solution,
+  };
 }
 
 export function solve({ modulus, base, time }: Puzzle): bigint {

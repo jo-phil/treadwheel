@@ -3,7 +3,8 @@ import { page, server } from 'vitest/browser';
 
 import { seal } from '../../src/browser/index.js';
 import '../../src/browser/widget.js';
-import fixture from '../fixtures/v1.json' with { type: 'json' };
+
+import { fixture } from '../fixtures';
 
 describe('widget', () => {
   let widget: HTMLElement;

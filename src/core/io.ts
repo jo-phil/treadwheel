@@ -1,4 +1,4 @@
-import type { Envelope } from './types.js';
+import type { Envelope, EnvelopeV2 } from './types.js';
 
 const MAGIC_BYTES = new Uint8Array([0xb7, 0x0f, 0xff]);
 
@@ -96,18 +96,20 @@ export function bigIntToBytes(
 export function envelopeToBytes({
   v,
   modulusByteLength,
+  baseByteLength,
   time,
   modulus,
   base,
   salt,
   iv,
   ciphertext,
-}: Envelope): Uint8Array<ArrayBuffer> {
-  // header: some magic bytes, 1 version, 8 for t, 2 mod length, 4 ct length
-  const headerSize = MAGIC_BYTES.byteLength + 15;
+}: EnvelopeV2): Uint8Array<ArrayBuffer> {
+  // magic bytes, 1 version, 8 for t, 2 mod length, 2 base length, 4 ct length
+  const headerSize = MAGIC_BYTES.byteLength + 17;
   const totalSize =
     headerSize +
-    2 * modulusByteLength +
+    modulusByteLength +
+    baseByteLength +
     salt.byteLength +
     iv.byteLength +
     ciphertext.byteLength;
@@ -119,11 +121,12 @@ export function envelopeToBytes({
   writer.writeUint8(v);
 
   writer.writeUint16(modulusByteLength);
+  writer.writeUint16(baseByteLength);
   writer.writeUint32(ciphertext.byteLength);
 
   writer.writeBigUInt64(time);
   writer.writeBytes(bigIntToBytes(modulus, modulusByteLength));
-  writer.writeBytes(bigIntToBytes(base, modulusByteLength));
+  writer.writeBytes(bigIntToBytes(base, baseByteLength));
 
   writer.writeBytes(salt);
   writer.writeBytes(iv);
@@ -140,18 +143,29 @@ export function bytesToEnvelope(bytes: Uint8Array<ArrayBuffer>): Envelope {
     throw new Error('Invalid envelope: magic bytes mismatch');
 
   const v = reader.readUint8();
-  if (v !== 1) throw new Error(`Unsupported envelope version ${v}`);
+  if (v !== 1 && v !== 2) throw new Error(`Unsupported envelope version ${v}`);
 
   const modulusByteLength = reader.readUint16();
+  const baseByteLength = v === 1 ? modulusByteLength : reader.readUint16();
   const ciphertextLength = reader.readUint32();
 
   const time = reader.readBigUInt64();
   const modulus = bytesToBigInt(reader.readBytes(modulusByteLength));
-  const base = bytesToBigInt(reader.readBytes(modulusByteLength));
+  const base = bytesToBigInt(reader.readBytes(baseByteLength));
 
   const salt = reader.readBytes(32);
   const iv = reader.readBytes(12);
   const ciphertext = reader.readBytes(ciphertextLength);
 
-  return { v, modulusByteLength, time, modulus, base, salt, iv, ciphertext };
+  return {
+    v,
+    modulusByteLength,
+    baseByteLength,
+    modulus,
+    base,
+    time,
+    salt,
+    iv,
+    ciphertext,
+  };
 }

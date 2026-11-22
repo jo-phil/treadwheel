@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import { bytesToEnvelope, envelopeToBytes } from '../../src/core/io.js';
-import fixture from '../fixtures/v1.json' with { type: 'json' };
+
+import { fixture } from '../fixtures';
 
 describe('io', () => {
   const buffer = Buffer.from(fixture.envelope, 'base64url');

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { execaNode } from 'execa';
 import { describe, expect, it } from 'vitest';
 
-import fixture from '../fixtures/v1.json' with { type: 'json' };
+import { fixture, v1, v2 } from '../fixtures';
 
 const CLI_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -37,7 +37,7 @@ describe('CLI', () => {
     expect(unsealResult.stdout.trim()).toBe(fixture.plaintext);
   });
 
-  it('unseals golden envelope', async () => {
+  it.for([v1, v2])('unseals v$v envelope', async (fixture) => {
     const unsealResult = await runCLI(['unseal', fixture.envelope]);
     expect(unsealResult.stderr).toBe('');
     expect(unsealResult.exitCode).toBe(0);
