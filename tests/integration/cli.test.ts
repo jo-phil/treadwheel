@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { execaNode } from 'execa';
 import { describe, expect, it } from 'vitest';
 
-import { fixture, v1, v2 } from '../fixtures';
+import { fixture, v1, v2 } from '../fixtures/index.js';
 
 const CLI_PATH = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),

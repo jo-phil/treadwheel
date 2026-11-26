@@ -2,7 +2,8 @@ import crypto from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 
 import { decrypt, encrypt } from '../../src/core/cipher.js';
-import fixture from '../fixtures/v1.json' with { type: 'json' };
+
+import { fixture } from '../fixtures/index.js';
 
 describe('cipher', () => {
   it('preserves data integrity', async () => {

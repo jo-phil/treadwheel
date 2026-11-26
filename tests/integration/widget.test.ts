@@ -4,7 +4,7 @@ import { page, server } from 'vitest/browser';
 import { seal } from '../../src/browser/index.js';
 import '../../src/browser/widget.js';
 
-import { fixture } from '../fixtures';
+import { fixture } from '../fixtures/index.js';
 
 describe('widget', () => {
   let widget: HTMLElement;

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { seal, unseal, unsealInWorker } from '../../src/node/index.js';
 
-import { fixture, v1, v2 } from '../fixtures';
+import { fixture, v1, v2 } from '../fixtures/index.js';
 
 vi.mock('node:worker_threads', async (importOriginal) => {
   const original = await importOriginal<typeof import('node:worker_threads')>();

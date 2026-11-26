@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { base64UrlToBytes, bytesToBase64Url } from '../../src/browser/codec.js';
 import { seal, unseal, unsealInWorker } from '../../src/browser/index.js';
 
-import { fixture, v1, v2 } from '../fixtures';
+import { fixture, v1, v2 } from '../fixtures/index.js';
 
 describe('browser', () => {
   it('unseals what it sealed', async () => {
