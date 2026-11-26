@@ -24,6 +24,8 @@ making mass collection more expensive and potentially less attractive.
 
 - A secure context (HTTPS or localhost) for the Web Crypto API.
 - ES2020 support, including BigInt.
+- ESM Web Worker support (not required if you use the provided CDN bundle or
+  bundle the worker as an IIFE).
 
 ## Installation
 
