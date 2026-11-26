@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import { bytesToEnvelope, envelopeToBytes } from '../../src/core/io.js';
+import type { EnvelopeV2 } from "../../src/core/types.js";
 
-import { fixture } from '../fixtures/index.js';
+import { v2 } from '../fixtures/index.js';
 
 describe('io', () => {
-  const buffer = Buffer.from(fixture.envelope, 'base64url');
+  const buffer = Buffer.from(v2.envelope, 'base64url');
   const bytes = new Uint8Array(
     buffer.buffer,
     buffer.byteOffset,
@@ -13,7 +14,7 @@ describe('io', () => {
   );
 
   it('serializes what it deserialized', () => {
-    const envelope = bytesToEnvelope(bytes);
+    const envelope = bytesToEnvelope(bytes) as EnvelopeV2;
     expect(envelopeToBytes(envelope)).toStrictEqual(bytes);
   });
 
