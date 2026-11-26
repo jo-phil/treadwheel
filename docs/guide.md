@@ -8,6 +8,19 @@ This guide explains how to seal plaintext using the CLI and integrate a widget
 to unseal it in a web application. For advanced usage, see the more in-depth
 pages on [CLI](/cli), [Widget](/widget), and [JavaScript API](/api).
 
+## Prerequisites
+
+### Node.js
+
+- Node.js 22 or later.
+
+### Browser
+
+- A secure context (HTTPS or localhost) for the Web Crypto API.
+- ES2020 support, including BigInt.
+- ESM Web Worker support (not required if you use the provided CDN bundle or
+  bundle the worker as an IIFE).
+
 ## Installation
 
 ::: code-group
