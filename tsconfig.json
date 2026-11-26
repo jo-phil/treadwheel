@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": ".",
+    "noEmit": true,
 
     "module": "nodenext",
     "target": "es2020",
     "lib": ["es2020", "DOM", "DOM.Iterable"],
-
-    "declaration": true,
 
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -25,6 +23,5 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  },
-  "exclude": ["docs/", "tests/", "tsdown.config.ts", "vitest.config.ts"]
+  }
 }

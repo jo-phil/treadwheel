@@ -50,8 +50,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm clean && tsc && tsdown",
-    "check": "tsc --noEmit",
+    "build": "pnpm clean && tsc -p tsconfig.build.json && tsdown",
+    "check": "tsc",
     "clean": "rimraf dist",
     "format": "biome format --write",
     "lint": "biome check",
