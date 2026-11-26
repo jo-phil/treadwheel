@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { bytesToEnvelope, envelopeToBytes } from '../../src/core/io.js';
-import type { EnvelopeV2 } from "../../src/core/types.js";
+import type { EnvelopeV2 } from '../../src/core/types.js';
 
 import { v2 } from '../fixtures/index.js';
 
