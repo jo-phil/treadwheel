@@ -67,9 +67,9 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.6",
     "@lit-labs/rollup-plugin-minify-html-literals": "^0.2.0",
-    "@types/node": "^26.6.6",
-    "@vitest/browser-playwright": "^5.1.0",
-    "@vitest/coverage-istanbul": "^5.1.0",
+    "@types/node": "^26.6.10",
+    "@vitest/browser-playwright": "^5.1.2",
+    "@vitest/coverage-istanbul": "^5.1.2",
     "execa": "^10.2.1",
     "magic-string": "^1.4.5",
     "nyc": "^18.0.0",
@@ -81,7 +81,7 @@
     "typedoc-plugin-markdown": "^4.14.1",
     "typescript": "^5.9.3",
     "vitepress": "^1.6.4",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.2"
   },
   "packageManager": "pnpm@12.21.0",
   "engines": {
